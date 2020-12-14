@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(QuakeApp());
@@ -145,7 +146,12 @@ class PageSomethingElse extends StatelessWidget {
   }
 }
 
-class PagePhoneHom extends StatelessWidget {
+class PagePhoneHom extends StatefulWidget {
+  @override
+  _PagePhoneHomState createState() => _PagePhoneHomState();
+}
+
+class _PagePhoneHomState extends State<PagePhoneHom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,18 +163,48 @@ class PagePhoneHom extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
-              autocorrect: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Phone Number',
-              ),
-            )),
-            Checkbox(value: null, tristate: true, onChanged: null),
-            Text("I have read and agreed on blablabla"),
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.allow(
+                  //       RegExp("[0123456789+]")) //TODO: reconsider regex?
+                  // ],
+                  maxLines: 1,
+                  //maxLength: 20, //TODO: reconsider?
+                  keyboardType: TextInputType.phone,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Phone Number',
+                  ),
+                )),
+            Container(
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Checkbox(
+                  value: false, onChanged: null), //TODO: validation of check
+              Text("I have read and agreed on blablabla"),
+            ])),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PagePhoneConfirm()));
+              },
+              child: Text("Send Confirmation Code"),
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+class PagePhoneConfirm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
