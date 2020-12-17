@@ -155,9 +155,6 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -202,9 +199,143 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
 }
 
 class PagePhoneConfirm extends StatelessWidget {
+  //maybe merge w/ phonehom?
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.allow(
+                  //       RegExp("[0123456789+]")) //TODO: reconsider regex?
+                  // ],
+                  maxLines: 1,
+                  //maxLength: 20, //TODO: reconsider?
+                  keyboardType: TextInputType.phone,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Confirmation Code',
+                  ),
+                )),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PageAddressData()));
+              },
+              child: Text("Send Confirmation Code"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PageAddressData extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: Form(
+              child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text("format this or you are have the big gae"),
+            ),
+            DropdownButtonFormField(
+                items: null, //insert list of thing cities
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'il',
+                ),
+                onChanged: null),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.5),
+              child: DropdownButtonFormField(
+                  items: null, //insert list of thing cities
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'ilçe',
+                  ),
+                  onChanged: null),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'açık adres',
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.5),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'açık adres pt2',
+                ),
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'adres tarifi',
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PageEmergencyContacts()));
+                },
+                child: Text("yællah")),
+          ],
+        ),
+      ))),
+    );
+  }
+}
+
+class PageEmergencyContacts extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.add_comment,
+            ),
+            Text(
+              'fuck this',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            Text(
+              'Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.',
+              textAlign: TextAlign.center,
+            ),
+            IconButton(
+              icon: Icon(Icons.wysiwyg),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PageSomethingElse()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
