@@ -333,6 +333,8 @@ class PageEmergencyContacts extends StatelessWidget {
   }
 }
 
+//TODO: https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
+
 class PageMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -592,9 +594,9 @@ class PageAssistant extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ElevatedButton(onPressed: null, child: null),
-              ElevatedButton(onPressed: null, child: null),
-              ElevatedButton(onPressed: null, child: null),
+              ElevatedButton(onPressed: null, child: Text("test")),
+              ElevatedButton(onPressed: null, child: Text("test")),
+              ElevatedButton(onPressed: null, child: Text("test")),
             ],
           ),
         ),
