@@ -12,13 +12,13 @@ class QuakeApp extends StatelessWidget {
     return MaterialApp(
       title: 'QuakeKit',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.blue,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: WelcomePage(), //will be an issue. i can smell it.
+      home: PageMain(), //will be an issue. i can smell it.
     );
   }
 }
@@ -135,13 +135,6 @@ class PageSomethingElse extends StatelessWidget {
           ],
         ),
       ),
-      /*bottomNavigationBar: BottomAppBar(
-                            color: Colors.blue,
-                            shape: const CircularNotchedRectangle(),
-                            child: Container(
-                              height: 50.0,
-                            ),
-                          ), */ //BottomAppBar This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -329,7 +322,7 @@ class PageEmergencyContacts extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PageSomethingElse()),
+                  MaterialPageRoute(builder: (context) => PageMain()),
                 );
               },
             ),
@@ -337,5 +330,321 @@ class PageEmergencyContacts extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class PageMain extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: null,
+              child: Text("yabai"),
+            ),
+            ElevatedButton(onPressed: null, child: Text("data"))
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        shape: const CircularNotchedRectangle(),
+        child: Container(
+          height: 50.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PageAssistant()));
+                  },
+                  child: Text("ass-istant")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PageLatest()));
+                  },
+                  child: Text("latest")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PageMapIGuess()));
+                  },
+                  child: Text("map??")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PageProfile()));
+                  },
+                  child: Text("profile"))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PageProfile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(),
+        body: Center(),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.blue,
+          shape: const CircularNotchedRectangle(),
+          child: Container(
+            height: 50.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageAssistant()));
+                    },
+                    child: Text("ass-istant")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageLatest()));
+                    },
+                    child: Text("latest")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageMapIGuess()));
+                    },
+                    child: Text("map??")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageProfile()));
+                    },
+                    child: Text("profile"))
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+class PageMapIGuess extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(),
+        body: Center(),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.blue,
+          shape: const CircularNotchedRectangle(),
+          child: Container(
+            height: 50.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageAssistant()));
+                    },
+                    child: Text("ass-istant")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageLatest()));
+                    },
+                    child: Text("latest")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageMapIGuess()));
+                    },
+                    child: Text("map??")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageProfile()));
+                    },
+                    child: Text("profile"))
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+final items = List<String>.generate(10000, (i) => "Item $i");
+
+class PageLatest extends StatefulWidget {
+  @override
+  _PageLatestState createState() => _PageLatestState();
+}
+
+class _PageLatestState extends State<PageLatest> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text('${items[index]}'),
+                subtitle: Text('yabai level:${items[index]}'),
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.blue,
+          shape: const CircularNotchedRectangle(),
+          child: Container(
+            height: 50.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageAssistant()));
+                    },
+                    child: Text("ass-istant")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageLatest()));
+                    },
+                    child: Text("latest")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageMapIGuess()));
+                    },
+                    child: Text("map??")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageProfile()));
+                    },
+                    child: Text("profile"))
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+class PageAssistant extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ElevatedButton(onPressed: null, child: null),
+              ElevatedButton(onPressed: null, child: null),
+              ElevatedButton(onPressed: null, child: null),
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.blue,
+          shape: const CircularNotchedRectangle(),
+          child: Container(
+            height: 50.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageAssistant()));
+                    },
+                    child: Text("ass-istant")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageLatest()));
+                    },
+                    child: Text("latest")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageMapIGuess()));
+                    },
+                    child: Text("map??")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageProfile()));
+                    },
+                    child: Text("profile"))
+              ],
+            ),
+          ),
+        ));
   }
 }
