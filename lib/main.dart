@@ -18,12 +18,12 @@ class QuakeApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: PageMain(), //will be an issue. i can smell it.
+      home: PageWelcome(), //will be an issue. i can smell it.
     );
   }
 }
 
-class WelcomePage extends StatelessWidget {
+class PageWelcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,13 +53,6 @@ class WelcomePage extends StatelessWidget {
           ],
         ),
       ),
-      /*bottomNavigationBar: BottomAppBar(
-        color: Colors.blue,
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          height: 50.0,
-        ),
-      ), */ //BottomAppBar This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -95,13 +88,6 @@ class PageLocServices extends StatelessWidget {
           ],
         ),
       ),
-      /*bottomNavigationBar: BottomAppBar(
-        color: Colors.blue,
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          height: 50.0,
-        ),
-      ), */ //BottomAppBar This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -209,7 +195,6 @@ class PagePhoneConfirm extends StatelessWidget {
                   // ],
                   maxLines: 1,
                   //maxLength: 20, //TODO: reconsider?
-                  keyboardType: TextInputType.phone,
                   autocorrect: false,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -306,15 +291,12 @@ class PageEmergencyContacts extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(
-              Icons.add_comment,
-            ),
             Text(
               'fuck this',
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(
-              'Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.',
+              'Good morning, and welcome to the Black Mesa Transit System.',
               textAlign: TextAlign.center,
             ),
             IconButton(
@@ -332,8 +314,6 @@ class PageEmergencyContacts extends StatelessWidget {
     );
   }
 }
-
-//TODO: https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
 
 class PageMain extends StatelessWidget {
   @override
@@ -401,7 +381,17 @@ class PageProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body: Center(),
+        body: Center(
+          child: Column(
+            //TODO: fix
+            children: [
+              Text("profil"),
+              //some sort of card
+              Text("Emergency Contacts"),
+              //emergency contacts
+            ],
+          ),
+        ),
         bottomNavigationBar: BottomAppBar(
           color: Colors.blue,
           shape: const CircularNotchedRectangle(),
@@ -521,7 +511,9 @@ class _PageLatestState extends State<PageLatest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("Latest Earthquakes"),
+        ),
         body: Center(
           child: ListView.builder(
             itemCount: items.length,
@@ -591,9 +583,14 @@ class PageAssistant extends StatelessWidget {
         appBar: AppBar(),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Padding(
+                //TODO: figure out how to center this
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                    "bottomNavigationBar: BottomAppBar(color: Colors.blue,shape: const CircularNotchedRectangle(),child: Container(height: 50.0,),),BottomAppBar This trailing comma makes auto-formatting nicer for build methods."),
+              ),
               ElevatedButton(onPressed: null, child: Text("test")),
               ElevatedButton(onPressed: null, child: Text("test")),
               ElevatedButton(onPressed: null, child: Text("test")),
