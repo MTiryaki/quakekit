@@ -6,7 +6,6 @@ void main() {
 }
 
 class QuakeApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +17,14 @@ class QuakeApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: PageWelcome(), //will be an issue. i can smell it.
+      routes: {
+        'assistRoute': (context) => PageAssistant(),
+        'mapRoute': (context) => PageMap(),
+        'mainRoute': (context) => PageMain(),
+        'latestRoute': (context) => PageLatest(),
+        'profileRoute': (context) => PageProfile(),
+      },
+      home: PageWelcome(),
     );
   }
 }
@@ -131,6 +137,11 @@ class PagePhoneHom extends StatefulWidget {
 }
 
 class _PagePhoneHomState extends State<PagePhoneHom> {
+  bool check = false;
+  /*void _validate(bool validate) {
+    _setState(); or something idk
+  }*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,12 +152,11 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
-                  // inputFormatters: [
-                  //   FilteringTextInputFormatter.allow(
-                  //       RegExp("[0123456789+]")) //TODO: reconsider regex?
-                  // ],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp("[0123456789]"))
+                  ],
                   maxLines: 1,
-                  //maxLength: 20, //TODO: reconsider?
+                  maxLength: 11,
                   keyboardType: TextInputType.phone,
                   autocorrect: false,
                   decoration: InputDecoration(
@@ -158,7 +168,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Checkbox(
-                  value: false, onChanged: null), //TODO: validation of check
+                  value: check, onChanged: null), //TODO: validation of check
               Text("I have read and agreed on blablabla"),
             ])),
             ElevatedButton(
@@ -178,7 +188,6 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
 }
 
 class PagePhoneConfirm extends StatelessWidget {
-  //maybe merge w/ phonehom?
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -189,13 +198,9 @@ class PagePhoneConfirm extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
-                  // inputFormatters: [
-                  //   FilteringTextInputFormatter.allow(
-                  //       RegExp("[0123456789+]")) //TODO: reconsider regex?
-                  // ],
                   maxLines: 1,
-                  //maxLength: 20, //TODO: reconsider?
                   autocorrect: false,
+                  keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Confirmation Code',
@@ -302,10 +307,7 @@ class PageEmergencyContacts extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.wysiwyg),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PageMain()),
-                );
+                Navigator.pushNamed(context, 'mainRoute');
               },
             ),
           ],
@@ -324,11 +326,24 @@ class PageMain extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: null,
-              child: Text("yabai"),
+            MaterialButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PageSecure()));
+              },
+              elevation: 2.0,
+              disabledColor: Colors.blue,
+              padding: EdgeInsets.all(15.0),
+              shape: CircleBorder(),
+              child: Text("secure"),
             ),
-            ElevatedButton(onPressed: null, child: Text("data"))
+            MaterialButton(
+                onPressed: null,
+                elevation: 2.0,
+                disabledColor: Colors.blue,
+                padding: EdgeInsets.all(15.0),
+                shape: CircleBorder(),
+                child: Text("insecure"))
           ],
         ),
       ),
@@ -347,7 +362,7 @@ class PageMain extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => PageAssistant()));
                   },
-                  child: Text("ass-istant")),
+                  child: Text("assistant")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
@@ -356,10 +371,8 @@ class PageMain extends StatelessWidget {
                   child: Text("latest")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PageMapIGuess()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PageMap()));
                   },
                   child: Text("map??")),
               ElevatedButton(
@@ -376,6 +389,20 @@ class PageMain extends StatelessWidget {
   }
 }
 
+class PageSecure extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class PageInsecure extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 class PageProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -383,6 +410,7 @@ class PageProfile extends StatelessWidget {
         appBar: AppBar(),
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             //TODO: fix
             children: [
               Text("profil"),
@@ -403,10 +431,7 @@ class PageProfile extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageAssistant()));
+                      Navigator.pushNamed(context, 'assistRoute');
                     },
                     child: Text("ass-istant")),
                 ElevatedButton(
@@ -421,10 +446,8 @@ class PageProfile extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageMapIGuess()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => PageMap()));
                     },
                     child: Text("map??")),
                 ElevatedButton(
@@ -443,12 +466,12 @@ class PageProfile extends StatelessWidget {
   }
 }
 
-class PageMapIGuess extends StatelessWidget {
+class PageMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body: Center(),
+        body: Center(/* TODO: map. seriously. */),
         bottomNavigationBar: BottomAppBar(
           color: Colors.blue,
           shape: const CircularNotchedRectangle(),
@@ -478,10 +501,8 @@ class PageMapIGuess extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageMapIGuess()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => PageMap()));
                     },
                     child: Text("map??")),
                 ElevatedButton(
@@ -500,14 +521,14 @@ class PageMapIGuess extends StatelessWidget {
   }
 }
 
-final items = List<String>.generate(10000, (i) => "Item $i");
-
 class PageLatest extends StatefulWidget {
   @override
   _PageLatestState createState() => _PageLatestState();
 }
 
 class _PageLatestState extends State<PageLatest> {
+  List<String> items =
+      List<String>.generate(10000, (i) => "Item $i"); //temporary
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -518,9 +539,14 @@ class _PageLatestState extends State<PageLatest> {
           child: ListView.builder(
             itemCount: items.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('${items[index]}'),
-                subtitle: Text('yabai level:${items[index]}'),
+              return Card(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("${items[index]}"),
+                    Text("magnitude:${items[index]}")
+                  ],
+                ),
               );
             },
           ),
@@ -536,28 +562,20 @@ class _PageLatestState extends State<PageLatest> {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageAssistant()));
+                      Navigator.pushNamed(context, 'assistRoute');
                     },
                     child: Text("ass-istant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageLatest()));
+                      Navigator.pushNamed(context, 'latestRoute');
                     },
                     child: Text("latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageMapIGuess()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => PageMap()));
                     },
                     child: Text("map??")),
                 ElevatedButton(
@@ -584,16 +602,36 @@ class PageAssistant extends StatelessWidget {
         body: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Padding(
-                //TODO: figure out how to center this
+                //TODO: figure out how to make this not look bad
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                    "bottomNavigationBar: BottomAppBar(color: Colors.blue,shape: const CircularNotchedRectangle(),child: Container(height: 50.0,),),BottomAppBar This trailing comma makes auto-formatting nicer for build methods."),
+                    "text goes herehttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.png"),
               ),
-              ElevatedButton(onPressed: null, child: Text("test")),
-              ElevatedButton(onPressed: null, child: Text("test")),
-              ElevatedButton(onPressed: null, child: Text("test")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PagePreQuake()));
+                  },
+                  child: Text("test")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PageInQuake()));
+                  },
+                  child: Text("test")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PagePostQuake()));
+                  },
+                  child: Text("test")),
             ],
           ),
         ),
@@ -626,10 +664,8 @@ class PageAssistant extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageMapIGuess()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => PageMap()));
                     },
                     child: Text("map??")),
                 ElevatedButton(
@@ -645,5 +681,35 @@ class PageAssistant extends StatelessWidget {
             ),
           ),
         ));
+  }
+}
+
+class PagePostQuake extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(),
+    );
+  }
+}
+
+class PageInQuake extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(),
+    );
+  }
+}
+
+class PagePreQuake extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(),
+    );
   }
 }
