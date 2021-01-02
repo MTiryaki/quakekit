@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: unused_import
+//import 'package:location/location.dart'; //TODO setup
+// ignore: unused_import
+//import 'package:permission_handler/permission_handler.dart'; //TODO: setup
+// ignore: unused_import
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
+// ignore: unused_import
+//import 'package:http/http.dart';
 
 void main() {
   runApp(QuakeApp());
@@ -30,6 +38,7 @@ class QuakeApp extends StatelessWidget {
 }
 
 class PageWelcome extends StatelessWidget {
+  //TODO replace placeholder
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +72,18 @@ class PageWelcome extends StatelessWidget {
   }
 }
 
-class PageLocServices extends StatelessWidget {
+class PageLocServices extends StatefulWidget {
+  @override
+  _PageLocServicesState createState() => _PageLocServicesState();
+}
+
+class _PageLocServicesState extends State<PageLocServices> {
+  @override
+  void initState() {
+    //TODO permission check
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +95,7 @@ class PageLocServices extends StatelessWidget {
               Icons.add_comment,
             ),
             Text(
-              'Welcome, Part 2',
+              '',
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(
@@ -87,7 +107,7 @@ class PageLocServices extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PageSomethingElse()),
+                  MaterialPageRoute(builder: (context) => PageContactsPerm()),
                 );
               },
             ),
@@ -98,7 +118,17 @@ class PageLocServices extends StatelessWidget {
   }
 }
 
-class PageSomethingElse extends StatelessWidget {
+class PageContactsPerm extends StatefulWidget {
+  @override
+  _PageContactsPermState createState() => _PageContactsPermState();
+}
+
+class _PageContactsPermState extends State<PageContactsPerm> {
+  @override //TODO contacts permission state
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,10 +167,21 @@ class PagePhoneHom extends StatefulWidget {
 }
 
 class _PagePhoneHomState extends State<PagePhoneHom> {
-  bool check = false;
-  /*void _validate(bool validate) {
-    _setState(); or something idk
-  }*/
+  bool check;
+  @override
+  void initState() {
+    check = false;
+    super.initState();
+  }
+
+  void _confirmCheck(bool val) {
+    setState(() {
+      if (!check)
+        check = true;
+      else
+        check = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,15 +209,18 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Checkbox(
-                  value: check, onChanged: null), //TODO: validation of check
+                  value: check,
+                  onChanged: _confirmCheck), //TODO: validation of check
               Text("I have read and agreed on blablabla"),
             ])),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PagePhoneConfirm()));
+                if (check) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PagePhoneConfirm()));
+                }
               },
               child: Text("Send Confirmation Code"),
             ),
@@ -338,7 +382,10 @@ class PageMain extends StatelessWidget {
               child: Text("secure"),
             ),
             MaterialButton(
-                onPressed: null,
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => PageSecure()));
+                },
                 elevation: 2.0,
                 disabledColor: Colors.blue,
                 padding: EdgeInsets.all(15.0),
@@ -357,28 +404,22 @@ class PageMain extends StatelessWidget {
             children: [
               ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PageAssistant()));
+                    Navigator.pushNamed(context, 'assistRoute');
                   },
-                  child: Text("assistant")),
+                  child: Text("ass-istant")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PageLatest()));
+                    Navigator.pushNamed(context, 'latestRoute');
                   },
                   child: Text("latest")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PageMap()));
+                    Navigator.pushNamed(context, 'mapRoute');
                   },
                   child: Text("map??")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PageProfile()));
+                    Navigator.pushNamed(context, 'profileRoute');
                   },
                   child: Text("profile"))
             ],
@@ -392,14 +433,22 @@ class PageMain extends StatelessWidget {
 class PageSecure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: Text('This is an example.'),
+      ),
+    );
   }
 }
 
 class PageInsecure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: Text('This is an example.'),
+      ),
+    );
   }
 }
 
@@ -409,15 +458,39 @@ class PageProfile extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //TODO: fix
-            children: [
-              Text("profil"),
-              //some sort of card
-              Text("Emergency Contacts"),
-              //emergency contacts
-            ],
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              //TODO: fix
+              children: [
+                // Text(
+                //   "profil",
+                //   style: Theme.of(context).textTheme.headline4,
+                // ),
+                Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text("Name Here"),
+                        subtitle: Text("æææ"),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Emergency Contacts",
+                  style: Theme.of(context).textTheme.headline4,
+                ),
+                Card(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [Text("a"), Text("aeae")], //TODO: placeholder
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
@@ -437,26 +510,19 @@ class PageProfile extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageLatest()));
+                      Navigator.pushNamed(context, 'latestRoute');
                     },
                     child: Text("latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => PageMap()));
+                      Navigator.pushNamed(context, 'mapRoute');
                     },
                     child: Text("map??")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageProfile()));
+                      Navigator.pushNamed(context, 'profileRoute');
                     },
                     child: Text("profile"))
               ],
@@ -483,35 +549,25 @@ class PageMap extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageAssistant()));
+                      Navigator.pushNamed(context, 'assistRoute');
                     },
                     child: Text("ass-istant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageLatest()));
+                      Navigator.pushNamed(context, 'latestRoute');
                     },
                     child: Text("latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => PageMap()));
+                      Navigator.pushNamed(context, 'mapRoute');
                     },
                     child: Text("map??")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageProfile()));
+                      Navigator.pushNamed(context, 'profileRoute');
                     },
                     child: Text("profile"))
               ],
@@ -544,7 +600,7 @@ class _PageLatestState extends State<PageLatest> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text("${items[index]}"),
-                    Text("magnitude:${items[index]}")
+                    Text("Magnitude:${items[index]}")
                   ],
                 ),
               );
@@ -607,8 +663,7 @@ class PageAssistant extends StatelessWidget {
               Padding(
                 //TODO: figure out how to make this not look bad
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                    "text goes herehttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.pnghttps://i.redd.it/cqrweo9xcvv41.png"),
+                child: Text("text goes here"),
               ),
               ElevatedButton(
                   onPressed: () {
@@ -646,35 +701,25 @@ class PageAssistant extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageAssistant()));
+                      Navigator.pushNamed(context, 'assistRoute');
                     },
                     child: Text("ass-istant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageLatest()));
+                      Navigator.pushNamed(context, 'latestRoute');
                     },
                     child: Text("latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => PageMap()));
+                      Navigator.pushNamed(context, 'mapRoute');
                     },
                     child: Text("map??")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageProfile()));
+                      Navigator.pushNamed(context, 'profileRoute');
                     },
                     child: Text("profile"))
               ],
