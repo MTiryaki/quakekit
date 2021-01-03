@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 // ignore: unused_import
 //import 'package:location/location.dart'; //TODO setup
 // ignore: unused_import
-//import 'package:permission_handler/permission_handler.dart'; //TODO: setup
+import 'package:permission_handler/permission_handler.dart'; //TODO: setup for ios
 // ignore: unused_import
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
 // ignore: unused_import
-//import 'package:http/http.dart';
+import 'package:http/http.dart';
 
 void main() {
   runApp(QuakeApp());
@@ -62,7 +62,8 @@ class PageWelcome extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PageLocServices()),
+                    MaterialPageRoute(
+                        builder: (context) => PageLocServices(null, null)),
                   );
                 }),
           ],
@@ -73,15 +74,40 @@ class PageWelcome extends StatelessWidget {
 }
 
 class PageLocServices extends StatefulWidget {
+  const PageLocServices(this._loc, this._locbg);
+  final Permission _loc;
+  final Permission _locbg;
   @override
-  _PageLocServicesState createState() => _PageLocServicesState();
+  _PageLocServicesState createState() => _PageLocServicesState(_loc, _locbg);
 }
 
 class _PageLocServicesState extends State<PageLocServices> {
+  _PageLocServicesState(this._loc, this._locbg); //TODO what the fuck is this
+  final Permission _loc;
+  final Permission _locbg;
+  PermissionStatus _locStat = PermissionStatus.undetermined;
+  PermissionStatus _locbgStat = PermissionStatus.undetermined;
   @override
   void initState() {
-    //TODO permission check
     super.initState();
+    _locPerm();
+  }
+
+  void _locPerm() async {
+    final statusLoc = await _loc.status;
+    final statusLocbg = await _locbg.status;
+    setState(() {
+      _locStat = statusLoc;
+      _locbgStat = statusLocbg;
+    });
+  }
+
+  Future<void> getPerm(Permission perm) async {
+    final statusLoc = await perm.request();
+    setState(() {
+      _locStat = statusLoc;
+      print(_locStat);
+    });
   }
 
   @override
@@ -208,9 +234,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
             Container(
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Checkbox(
-                  value: check,
-                  onChanged: _confirmCheck), //TODO: validation of check
+              Checkbox(value: check, onChanged: _confirmCheck),
               Text("I have read and agreed on blablabla"),
             ])),
             ElevatedButton(
@@ -232,6 +256,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
 }
 
 class PagePhoneConfirm extends StatelessWidget {
+  //TODO plug in firebase for auth purposes
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -333,6 +358,7 @@ class PageAddressData extends StatelessWidget {
 }
 
 class PageEmergencyContacts extends StatelessWidget {
+  //TODO actually implement this ffs
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -430,7 +456,17 @@ class PageMain extends StatelessWidget {
   }
 }
 
-class PageSecure extends StatelessWidget {
+class PageSecure extends StatefulWidget {
+  @override
+  _PageSecureState createState() => _PageSecureState();
+}
+
+class _PageSecureState extends State<PageSecure> {
+  void initState() {
+    super.initState();
+    //TODO send current location and current status
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -441,7 +477,17 @@ class PageSecure extends StatelessWidget {
   }
 }
 
-class PageInsecure extends StatelessWidget {
+class PageInsecure extends StatefulWidget {
+  @override
+  _PageInsecureState createState() => _PageInsecureState();
+}
+
+class _PageInsecureState extends State<PageInsecure> {
+  void initState() {
+    super.initState();
+    //TODO send current location and current status
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -486,7 +532,10 @@ class PageProfile extends StatelessWidget {
                 Card(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [Text("a"), Text("aeae")], //TODO: placeholder
+                    children: [
+                      Text("a"),
+                      Text("aeae")
+                    ], //TODO: feed data from emergency contacts
                   ),
                 )
               ],
@@ -663,7 +712,10 @@ class PageAssistant extends StatelessWidget {
               Padding(
                 //TODO: figure out how to make this not look bad
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text("text goes here"),
+                child: Text(
+                  "text goes here",
+                  textAlign: TextAlign.center,
+                ),
               ),
               ElevatedButton(
                   onPressed: () {
@@ -672,13 +724,13 @@ class PageAssistant extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => PagePreQuake()));
                   },
-                  child: Text("test")),
+                  child: Text("Before an Earthquake")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => PageInQuake()));
                   },
-                  child: Text("test")),
+                  child: Text("During an Earthquake")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -686,7 +738,7 @@ class PageAssistant extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => PagePostQuake()));
                   },
-                  child: Text("test")),
+                  child: Text("After an Earthquake")),
             ],
           ),
         ),
