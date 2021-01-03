@@ -153,6 +153,16 @@ class _PageContactsPermState extends State<PageContactsPerm> {
   @override //TODO contacts permission state
   void initState() {
     super.initState();
+    _contactPerm();
+  }
+
+  void _contactPerm() async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('ok_hand'),
+      ),
+    );
   }
 
   @override
