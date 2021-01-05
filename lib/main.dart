@@ -1,16 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: unused_import
-//import 'package:location/location.dart'; //TODO setup
+import 'package:location/location.dart';
 // ignore: unused_import
-import 'package:permission_handler/permission_handler.dart'; //TODO: setup for ios
+import 'package:permission_handler/permission_handler.dart'
+    as permhand; //TODO confirm setup on ios
 // ignore: unused_import
-//import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart'; //TODO setup
 // ignore: unused_import
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http; //TODO setup
+// ignore: unused_import
+import 'package:contacts_service/contacts_service.dart';
+// ignore: unused_import
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart'; //TODO set the fuck up
 
 void main() {
-  runApp(QuakeApp());
+  runApp(InitBuild());
+}
+
+class InitBuild extends StatelessWidget {
+  final Future<FirebaseApp> _innit = Firebase.initializeApp();
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _innit,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return AlertDialog(
+            title: Text("uh oh."),
+          );
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          return QuakeApp();
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return PageLoading();
+      },
+    );
+  }
+}
+
+class PageLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return null;
+  }
 }
 
 class QuakeApp extends StatelessWidget {
@@ -75,18 +111,18 @@ class PageWelcome extends StatelessWidget {
 
 class PageLocServices extends StatefulWidget {
   const PageLocServices(this._loc, this._locbg);
-  final Permission _loc;
-  final Permission _locbg;
+  final permhand.Permission _loc;
+  final permhand.Permission _locbg;
   @override
   _PageLocServicesState createState() => _PageLocServicesState(_loc, _locbg);
 }
 
 class _PageLocServicesState extends State<PageLocServices> {
   _PageLocServicesState(this._loc, this._locbg); //TODO what the fuck is this
-  final Permission _loc;
-  final Permission _locbg;
-  PermissionStatus _locStat = PermissionStatus.undetermined;
-  PermissionStatus _locbgStat = PermissionStatus.undetermined;
+  final permhand.Permission _loc;
+  final permhand.Permission _locbg;
+  permhand.PermissionStatus _locStat = permhand.PermissionStatus.undetermined;
+  permhand.PermissionStatus _locbgStat = permhand.PermissionStatus.undetermined;
   @override
   void initState() {
     super.initState();
@@ -102,7 +138,7 @@ class _PageLocServicesState extends State<PageLocServices> {
     });
   }
 
-  Future<void> getPerm(Permission perm) async {
+  Future<void> getPerm(permhand.Permission perm) async {
     final statusLoc = await perm.request();
     setState(() {
       _locStat = statusLoc;
