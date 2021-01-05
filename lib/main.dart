@@ -1,51 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: unused_import
 import 'package:location/location.dart';
-// ignore: unused_import
 import 'package:permission_handler/permission_handler.dart'
     as permhand; //TODO confirm setup on ios
-// ignore: unused_import
 import 'package:google_maps_flutter/google_maps_flutter.dart'; //TODO setup
-// ignore: unused_import
-import 'package:http/http.dart' as http; //TODO setup
-// ignore: unused_import
+import 'package:http/http.dart';
 import 'package:contacts_service/contacts_service.dart';
-// ignore: unused_import
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart'; //TODO set the fuck up
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(InitBuild());
 }
 
 class InitBuild extends StatelessWidget {
-  final Future<FirebaseApp> _innit = Firebase.initializeApp();
+  final Future<FirebaseApp> _init = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _innit,
+      future: _init,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AlertDialog(
-            title: Text("uh oh."),
-          );
+          return WhyTheHell();
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return QuakeApp();
         }
-
-        // Otherwise, show something whilst waiting for initialization to complete
-        return PageLoading();
+        return WhyTheFuck();
       },
     );
   }
 }
 
-class PageLoading extends StatelessWidget {
+class WhyTheFuck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return null;
+    return MaterialApp(
+      title: 'QuakeKit',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        // This makes the visual density adapt to the platform that you run
+        // the app on. For desktop platforms, the controls will be smaller and
+        // closer together (more dense) than on mobile platforms.
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: PageSenchou(),
+    );
+  }
+}
+
+class PageSenchou extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text("Ahoy!"),
+    );
+  }
+}
+
+class WhyTheHell extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'QuakeKit',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        // This makes the visual density adapt to the platform that you run
+        // the app on. For desktop platforms, the controls will be smaller and
+        // closer together (more dense) than on mobile platforms.
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: PagePainPeko(),
+    );
+  }
+}
+
+class PagePainPeko extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text("Pain-peko."),
+    );
   }
 }
 

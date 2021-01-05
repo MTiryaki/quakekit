@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "535322898439",
+    "project_id": "quakekit-31e26",
+    "storage_bucket": "quakekit-31e26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535322898439:android:96add37678dc669fb9faa2",
+        "android_client_info": {
+          "package_name": "com.example.quakekit_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "535322898439-m9g1808ir338abv42c09ptvfbid7fjbv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quakekit_app",
+            "certificate_hash": "a446e19b25a9bfcacdb78dd7ca52ee8cd8d4e5f0"
+          }
+        },
+        {
+          "client_id": "535322898439-euc4i2hfik4hgk44tr2dmd9rbl3blpvd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBUu5dDyBxiMzwjkF9OEgyLYp8MU1ozCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "535322898439-euc4i2hfik4hgk44tr2dmd9rbl3blpvd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
