@@ -22,70 +22,21 @@ class InitBuild extends StatelessWidget {
       future: _init,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return WhyTheHell();
+          return QuakeApp(-1);
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return QuakeApp();
+          return QuakeApp(1);
         }
-        return WhyTheFuck();
+        return QuakeApp(0);
       },
     );
   }
 }
 
-class WhyTheFuck extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'QuakeKit',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: PageSenchou(),
-    );
-  }
-}
-
-class PageSenchou extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text("Ahoy!"),
-    );
-  }
-}
-
-class WhyTheHell extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'QuakeKit',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: PagePainPeko(),
-    );
-  }
-}
-
-class PagePainPeko extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text("Pain-peko."),
-    );
-  }
-}
-
+// ignore: must_be_immutable
 class QuakeApp extends StatelessWidget {
+  var authStatus = 0;
+  QuakeApp(this.authStatus);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -163,6 +114,14 @@ class _PageLocServicesState extends State<PageLocServices> {
   void initState() {
     super.initState();
     _locPerm();
+    testPerm();
+    getPerm();
+    testPerm();
+  }
+
+  void testPerm() async {
+    print(_locStat.toString());
+    print(_locbgStat.toString());
   }
 
   void _locPerm() async {
@@ -174,11 +133,12 @@ class _PageLocServicesState extends State<PageLocServices> {
     });
   }
 
-  Future<void> getPerm(permhand.Permission perm) async {
-    final statusLoc = await perm.request();
+  Future<void> getPerm() async {
+    final statusLoc = await _loc.request();
+    final statusLocbg = await _locbg.request();
     setState(() {
       _locStat = statusLoc;
-      print(_locStat);
+      _locbgStat = statusLocbg;
     });
   }
 
@@ -225,16 +185,11 @@ class _PageContactsPermState extends State<PageContactsPerm> {
   @override //TODO contacts permission state
   void initState() {
     super.initState();
-    _contactPerm();
+    //_contactPerm();
   }
 
-  void _contactPerm() async {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('ok_hand'),
-      ),
-    );
+  void _contactPerm() {
+    //fuck.
   }
 
   @override
@@ -276,6 +231,7 @@ class PagePhoneHom extends StatefulWidget {
 
 class _PagePhoneHomState extends State<PagePhoneHom> {
   bool check;
+  var _number;
   @override
   void initState() {
     check = false;
@@ -291,6 +247,16 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
     });
   }
 
+  void _authRequest(String _phoneNum) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: _phoneNum,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {},
+      codeSent: (String verificationId, int resendToken) {},
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -301,18 +267,20 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp("[0123456789]"))
-                  ],
-                  maxLines: 1,
-                  maxLength: 11,
-                  keyboardType: TextInputType.phone,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Phone Number',
-                  ),
-                )),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp("[+0123456789]"))
+                    ],
+                    maxLines: 1,
+                    maxLength: 14,
+                    keyboardType: TextInputType.phone,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Phone Number',
+                    ),
+                    onChanged: (String newVal) {
+                      _number = newVal;
+                    })),
             Container(
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -322,6 +290,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
             ElevatedButton(
               onPressed: () {
                 if (check) {
+                  _authRequest(_number);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -362,7 +331,7 @@ class PagePhoneConfirm extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => PageAddressData()));
               },
-              child: Text("Send Confirmation Code"),
+              child: Text("Confirm"),
             ),
           ],
         ),
@@ -371,7 +340,15 @@ class PagePhoneConfirm extends StatelessWidget {
   }
 }
 
-class PageAddressData extends StatelessWidget {
+class PageAddressData extends StatefulWidget {
+  @override
+  _PageAddressDataState createState() => _PageAddressDataState();
+}
+
+String cityName = null;
+void _test() {}
+
+class _PageAddressDataState extends State<PageAddressData> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -387,16 +364,106 @@ class PageAddressData extends StatelessWidget {
               child: Text("format this or you are have the big gae"),
             ),
             DropdownButtonFormField(
-                items: null, //insert list of thing cities
+                items: <String>[
+                  //watame wa warukunai yo ne
+                  'Adana',
+                  'Adıyaman',
+                  'Afyon',
+                  'Ağrı',
+                  'Amasya',
+                  'Ankara',
+                  'Antalya',
+                  'Artvin',
+                  'Aydın',
+                  'Balıkesir',
+                  'Bilecik',
+                  'Bingöl',
+                  'Bitlis',
+                  'Bolu',
+                  'Burdur',
+                  'Bursa',
+                  'Çanakkale',
+                  'Çankırı',
+                  'Çorum',
+                  'Denizli',
+                  'Diyarbakır',
+                  'Edirne',
+                  'Elazığ',
+                  'Erzincan',
+                  'Erzurum',
+                  'Eskişehir',
+                  'Gaziantep',
+                  'Giresun',
+                  'Gümüşhane',
+                  'Hakkari',
+                  'Hatay',
+                  'Isparta',
+                  'İçel (Mersin)',
+                  'İstanbul',
+                  'İzmir',
+                  'Kars',
+                  'Kastamonu',
+                  'Kayseri',
+                  'Kırklareli',
+                  'Kırşehir',
+                  'Kocaeli',
+                  'Konya',
+                  'Kütahya',
+                  'Malatya',
+                  'Manisa',
+                  'K.maraş',
+                  'Mardin',
+                  'Muğla',
+                  'Muş',
+                  'Nevşehir',
+                  'Niğde',
+                  'Ordu',
+                  'Rize',
+                  'Sakarya',
+                  'Samsun',
+                  'Siirt',
+                  'Sinop',
+                  'Sivas',
+                  'Tekirdağ',
+                  'Tokat',
+                  'Trabzon',
+                  'Tunceli',
+                  'Şanlıurfa',
+                  'Uşak',
+                  'Van',
+                  'Yozgat',
+                  'Zonguldak',
+                  'Aksaray',
+                  'Bayburt',
+                  'Karaman',
+                  'Kırıkkale',
+                  'Batman',
+                  'Şırnak',
+                  'Bartın',
+                  'Ardahan',
+                  'Iğdır',
+                  'Yalova',
+                  'Karabük',
+                  'Kilis',
+                  'Osmaniye',
+                  'Düzce'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'il',
                 ),
-                onChanged: null),
+                onChanged: (String newValue) {
+                  cityName = newValue;
+                }),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 2.5),
               child: DropdownButtonFormField(
-                  items: null, //insert list of thing cities
+                  items: null,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'ilçe',
@@ -431,7 +498,7 @@ class PageAddressData extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => PageEmergencyContacts()));
                 },
-                child: Text("yællah")),
+                child: Text("Confirm")),
           ],
         ),
       ))),
@@ -514,22 +581,22 @@ class PageMain extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, 'assistRoute');
                   },
-                  child: Text("ass-istant")),
+                  child: Text("Assistant")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, 'latestRoute');
                   },
-                  child: Text("latest")),
+                  child: Text("Latest")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, 'mapRoute');
                   },
-                  child: Text("map??")),
+                  child: Text("Map")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, 'profileRoute');
                   },
-                  child: Text("profile"))
+                  child: Text("Profile"))
             ],
           ),
         ),
