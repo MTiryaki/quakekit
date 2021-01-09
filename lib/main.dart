@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart'
-    as permhand; //TODO confirm setup on ios
-import 'package:google_maps_flutter/google_maps_flutter.dart'; //TODO setup
-import 'package:http/http.dart';
+import 'package:permission_handler/permission_handler.dart' as permhand;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart'; //TODO set the fuck up
+import 'dart:async';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(InitBuild());
+  await Firebase.initializeApp();
+  runApp(QuakeApp());
 }
 
+/*
 class InitBuild extends StatelessWidget {
   final Future<FirebaseApp> _init = Firebase.initializeApp();
   @override
@@ -32,11 +34,8 @@ class InitBuild extends StatelessWidget {
     );
   }
 }
-
-// ignore: must_be_immutable
+*/
 class QuakeApp extends StatelessWidget {
-  var authStatus = 0;
-  QuakeApp(this.authStatus);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -98,16 +97,14 @@ class PageWelcome extends StatelessWidget {
 
 class PageLocServices extends StatefulWidget {
   const PageLocServices(this._loc, this._locbg);
-  final permhand.Permission _loc;
-  final permhand.Permission _locbg;
+  final permhand.Permission _loc, _locbg;
   @override
   _PageLocServicesState createState() => _PageLocServicesState(_loc, _locbg);
 }
 
 class _PageLocServicesState extends State<PageLocServices> {
   _PageLocServicesState(this._loc, this._locbg); //TODO what the fuck is this
-  final permhand.Permission _loc;
-  final permhand.Permission _locbg;
+  final permhand.Permission _loc, _locbg;
   permhand.PermissionStatus _locStat = permhand.PermissionStatus.undetermined;
   permhand.PermissionStatus _locbgStat = permhand.PermissionStatus.undetermined;
   @override
@@ -185,7 +182,6 @@ class _PageContactsPermState extends State<PageContactsPerm> {
   @override //TODO contacts permission state
   void initState() {
     super.initState();
-    //_contactPerm();
   }
 
   void _contactPerm() {
@@ -203,7 +199,7 @@ class _PageContactsPermState extends State<PageContactsPerm> {
               Icons.add_comment,
             ),
             Text(
-              'you did it',
+              'Contacts Permission',
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(
@@ -250,9 +246,20 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
   void _authRequest(String _phoneNum) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: _phoneNum,
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int resendToken) {},
+      verificationCompleted: (PhoneAuthCredential cred) async {
+        await FirebaseAuth.instance.signInWithCredential(cred);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        }
+      },
+      codeSent: (String verificationId, int resendToken) async {
+        String smsCode;
+        PhoneAuthCredential cred = PhoneAuthProvider.credential(
+            verificationId: verificationId, smsCode: smsCode);
+        await FirebaseAuth.instance.signInWithCredential(cred);
+      },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
   }
@@ -271,7 +278,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                       FilteringTextInputFormatter.allow(RegExp("[+0123456789]"))
                     ],
                     maxLines: 1,
-                    maxLength: 14,
+                    maxLength: 13,
                     keyboardType: TextInputType.phone,
                     autocorrect: false,
                     decoration: InputDecoration(
@@ -290,37 +297,18 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
             ElevatedButton(
               onPressed: () {
                 if (check) {
-                  _authRequest(_number);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PagePhoneConfirm()));
+                  _authRequest(null);
                 }
               },
               child: Text("Send Confirmation Code"),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PagePhoneConfirm extends StatelessWidget {
-  //TODO plug in firebase for auth purposes
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextField(
                   maxLines: 1,
                   autocorrect: false,
-                  keyboardType: TextInputType.visiblePassword,
+                  keyboardType: TextInputType.number,
+                  maxLength: 6,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Confirmation Code',
@@ -345,9 +333,6 @@ class PageAddressData extends StatefulWidget {
   _PageAddressDataState createState() => _PageAddressDataState();
 }
 
-String cityName = null;
-void _test() {}
-
 class _PageAddressDataState extends State<PageAddressData> {
   @override
   Widget build(BuildContext context) {
@@ -361,11 +346,10 @@ class _PageAddressDataState extends State<PageAddressData> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Text("format this or you are have the big gae"),
+              child: Text("Address Data"),
             ),
             DropdownButtonFormField(
                 items: <String>[
-                  //watame wa warukunai yo ne
                   'Adana',
                   'Adıyaman',
                   'Afyon',
@@ -455,25 +439,29 @@ class _PageAddressDataState extends State<PageAddressData> {
                 }).toList(),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'il',
+                  labelText: 'City',
                 ),
-                onChanged: (String newValue) {
-                  cityName = newValue;
-                }),
+                onChanged: (String newValue) {}),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 2.5),
-              child: DropdownButtonFormField(
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'District',
+                ),
+              ), /* on hold for reasons
+              DropdownButtonFormField(
                   items: null,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'ilçe',
+                    labelText: 'District',
                   ),
-                  onChanged: null),
+                  onChanged: null),*/
             ),
             TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'açık adres',
+                labelText: 'Address Line 2',
               ),
             ),
             Padding(
@@ -481,18 +469,19 @@ class _PageAddressDataState extends State<PageAddressData> {
               child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'açık adres pt2',
+                  labelText: 'Address Line 2',
                 ),
               ),
             ),
             TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'adres tarifi',
+                labelText: 'Address Description',
               ),
             ),
             ElevatedButton(
                 onPressed: () {
+                  //TODO insert API PUT/POST here
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -516,7 +505,7 @@ class PageEmergencyContacts extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'fuck this',
+              'Emergency Contacts',
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(
@@ -554,7 +543,7 @@ class PageMain extends StatelessWidget {
               disabledColor: Colors.blue,
               padding: EdgeInsets.all(15.0),
               shape: CircleBorder(),
-              child: Text("secure"),
+              child: Text("Secure"),
             ),
             MaterialButton(
                 onPressed: () {
@@ -565,7 +554,7 @@ class PageMain extends StatelessWidget {
                 disabledColor: Colors.blue,
                 padding: EdgeInsets.all(15.0),
                 shape: CircleBorder(),
-                child: Text("insecure"))
+                child: Text("Insecure"))
           ],
         ),
       ),
@@ -613,7 +602,6 @@ class PageSecure extends StatefulWidget {
 class _PageSecureState extends State<PageSecure> {
   void initState() {
     super.initState();
-    //TODO send current location and current status
   }
 
   @override
@@ -704,25 +692,25 @@ class PageProfile extends StatelessWidget {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'assistRoute');
                     },
-                    child: Text("ass-istant")),
+                    child: Text("Assistant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'latestRoute');
                     },
-                    child: Text("latest")),
+                    child: Text("Latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'mapRoute');
                     },
-                    child: Text("map??")),
+                    child: Text("Map")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'profileRoute');
                     },
-                    child: Text("profile"))
+                    child: Text("Profile"))
               ],
             ),
           ),
@@ -731,11 +719,26 @@ class PageProfile extends StatelessWidget {
 }
 
 class PageMap extends StatelessWidget {
+  final Completer<GoogleMapController> _controller = Completer();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body: Center(/* TODO: map. seriously. */),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(41.042169, 29.0070704),
+                zoom: 17,
+              ),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+            ),
+          ),
+        ),
         bottomNavigationBar: BottomAppBar(
           color: Colors.blue,
           shape: const CircularNotchedRectangle(),
@@ -749,25 +752,25 @@ class PageMap extends StatelessWidget {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'assistRoute');
                     },
-                    child: Text("ass-istant")),
+                    child: Text("Assistant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'latestRoute');
                     },
-                    child: Text("latest")),
+                    child: Text("Latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'mapRoute');
                     },
-                    child: Text("map??")),
+                    child: Text("Map")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'profileRoute');
                     },
-                    child: Text("profile"))
+                    child: Text("Profile"))
               ],
             ),
           ),
@@ -818,20 +821,20 @@ class _PageLatestState extends State<PageLatest> {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'assistRoute');
                     },
-                    child: Text("ass-istant")),
+                    child: Text("Assistant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'latestRoute');
                     },
-                    child: Text("latest")),
+                    child: Text("Latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => PageMap()));
                     },
-                    child: Text("map??")),
+                    child: Text("Map")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -840,7 +843,7 @@ class _PageLatestState extends State<PageLatest> {
                           MaterialPageRoute(
                               builder: (context) => PageProfile()));
                     },
-                    child: Text("profile"))
+                    child: Text("Profile"))
               ],
             ),
           ),
@@ -904,25 +907,25 @@ class PageAssistant extends StatelessWidget {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'assistRoute');
                     },
-                    child: Text("ass-istant")),
+                    child: Text("Assistant")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'latestRoute');
                     },
-                    child: Text("latest")),
+                    child: Text("Latest")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'mapRoute');
                     },
-                    child: Text("map??")),
+                    child: Text("Map")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, 'profileRoute');
                     },
-                    child: Text("profile"))
+                    child: Text("Profile"))
               ],
             ),
           ),
