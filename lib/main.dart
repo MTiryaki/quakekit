@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
@@ -8,6 +10,9 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart'; //TODO set the fuck up
 import 'dart:async';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'main.g.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -105,11 +110,14 @@ class PageLocServices extends StatefulWidget {
 class _PageLocServicesState extends State<PageLocServices> {
   _PageLocServicesState(this._loc, this._locbg); //TODO what the fuck is this
   final permhand.Permission _loc, _locbg;
-  permhand.PermissionStatus _locStat = permhand.PermissionStatus.undetermined;
-  permhand.PermissionStatus _locbgStat = permhand.PermissionStatus.undetermined;
+  permhand.PermissionStatus _locStat;
+  permhand.PermissionStatus _locbgStat;
   @override
   void initState() {
     super.initState();
+
+    _locStat = permhand.PermissionStatus.undetermined;
+    _locbgStat = permhand.PermissionStatus.undetermined;
     _locPerm();
     testPerm();
     getPerm();
@@ -226,12 +234,19 @@ class PagePhoneHom extends StatefulWidget {
 }
 
 class _PagePhoneHomState extends State<PagePhoneHom> {
+  final _scKey = GlobalKey<ScaffoldState>();
   bool check;
-  var _number;
+  TextEditingController pNumCont;
+  TextEditingController vCodeCont;
+  FirebaseAuth _fAuth = FirebaseAuth.instance;
+  String _vId;
+  String _num;
   @override
   void initState() {
-    check = false;
     super.initState();
+    check = false;
+    vCodeCont = TextEditingController();
+    pNumCont = TextEditingController();
   }
 
   void _confirmCheck(bool val) {
@@ -243,30 +258,43 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
     });
   }
 
-  void _authRequest(String _phoneNum) async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: _phoneNum,
-      verificationCompleted: (PhoneAuthCredential cred) async {
-        await FirebaseAuth.instance.signInWithCredential(cred);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.');
-        }
-      },
-      codeSent: (String verificationId, int resendToken) async {
-        String smsCode;
-        PhoneAuthCredential cred = PhoneAuthProvider.credential(
-            verificationId: verificationId, smsCode: smsCode);
-        await FirebaseAuth.instance.signInWithCredential(cred);
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
+  void sendCode() async {
+    await _fAuth.verifyPhoneNumber(
+        phoneNumber: _num,
+        timeout: Duration(seconds: 20),
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          await _fAuth.signInWithCredential(phoneAuthCredential);
+        },
+        verificationFailed: (FirebaseAuthException authException) {
+          _scKey.currentState
+              .showSnackBar(SnackBar(content: Text("Uh oh. $authException")));
+        },
+        codeSent: (String verificationId, [int forceResendingToken]) async {
+          _vId = verificationId;
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _vId = verificationId;
+        });
+  }
+
+  Future<bool> confirmCode() async {
+    try {
+      final AuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _vId,
+        smsCode: vCodeCont.text,
+      );
+      await _fAuth.signInWithCredential(credential);
+      return true;
+    } catch (e) {
+      _scKey.currentState.showSnackBar(SnackBar(content: Text("Uh oh. $e")));
+      return false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scKey,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -279,6 +307,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                     ],
                     maxLines: 1,
                     maxLength: 13,
+                    controller: pNumCont,
                     keyboardType: TextInputType.phone,
                     autocorrect: false,
                     decoration: InputDecoration(
@@ -286,18 +315,20 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                       labelText: 'Phone Number',
                     ),
                     onChanged: (String newVal) {
-                      _number = newVal;
+                      setState(() {
+                        _num = newVal;
+                      });
                     })),
             Container(
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Checkbox(value: check, onChanged: _confirmCheck),
-              Text("I have read and agreed on blablabla"),
+              Text("I have read and agreed on the Terms and Conditions"),
             ])),
             ElevatedButton(
               onPressed: () {
                 if (check) {
-                  _authRequest(null);
+                  sendCode();
                 }
               },
               child: Text("Send Confirmation Code"),
@@ -309,6 +340,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                   autocorrect: false,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
+                  controller: vCodeCont,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Confirmation Code',
@@ -316,8 +348,10 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                 )),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PageAddressData()));
+                confirmCode().then((value) => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PageAddressData())));
               },
               child: Text("Confirm"),
             ),
@@ -718,6 +752,86 @@ class PageProfile extends StatelessWidget {
   }
 }
 
+@JsonSerializable()
+class UserProfile {
+  final String locName, depth, sizes, lat, lng, date, time;
+  UserProfile(
+      {this.locName,
+      this.depth,
+      this.sizes,
+      this.lat,
+      this.lng,
+      this.date,
+      this.time});
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) =>
+      _$UserProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
+}
+
+class PageNewProfile extends StatefulWidget {
+  @override
+  _PageNewProfileState createState() => _PageNewProfileState();
+}
+
+class _PageNewProfileState extends State<PageNewProfile> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: Form(
+              child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text("Address Data"),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.5),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'District',
+                ),
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Address Line 2',
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.5),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Address Line 2',
+                ),
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Address Description',
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  //TODO insert API PUT/POST here
+                },
+                child: Text("Confirm")),
+          ],
+        ),
+      ))),
+    );
+  }
+}
+
 class PageMap extends StatelessWidget {
   final Completer<GoogleMapController> _controller = Completer();
   @override
@@ -783,9 +897,48 @@ class PageLatest extends StatefulWidget {
   _PageLatestState createState() => _PageLatestState();
 }
 
+@JsonSerializable()
+class Quake {
+  final String locName, depth, sizes, lat, lng, date, time;
+  Quake(
+      {this.locName,
+      this.depth,
+      this.sizes,
+      this.lat,
+      this.lng,
+      this.date,
+      this.time});
+
+  factory Quake.fromJson(Map<String, dynamic> json) => _$QuakeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuakeToJson(this);
+}
+
 class _PageLatestState extends State<PageLatest> {
-  List<String> items =
-      List<String>.generate(10000, (i) => "Item $i"); //temporary
+  List<Quake> quakes;
+  Future<List<Quake>> fetchQuake() async {
+    final response = await http
+        .get('https://quakekit-api.hbksoftware.com.tr/api/EarthQuake');
+
+    if (response.statusCode == 200) {
+      return compute(parseQuakes, response.body);
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
+  List<Quake> parseQuakes(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Quake>((json) => Quake.fromJson(json)).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchQuake().whenComplete(() => quakes);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -794,14 +947,14 @@ class _PageLatestState extends State<PageLatest> {
         ),
         body: Center(
           child: ListView.builder(
-            itemCount: items.length,
+            itemCount: 50,
             itemBuilder: (context, index) {
               return Card(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text("${items[index]}"),
-                    Text("Magnitude:${items[index]}")
+                    Text("${quakes[index].locName}"),
+                    Text("${quakes[index].sizes}")
                   ],
                 ),
               );
@@ -865,7 +1018,7 @@ class PageAssistant extends StatelessWidget {
                 //TODO: figure out how to make this not look bad
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                  "text goes here",
+                  "Earthquake Assistant",
                   textAlign: TextAlign.center,
                 ),
               ),
