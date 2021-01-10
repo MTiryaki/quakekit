@@ -30,6 +30,7 @@ class QuakeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'QuakeKit',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -45,160 +46,211 @@ class QuakeApp extends StatelessWidget {
         'latestRoute': (context) => PageLatest(),
         'profileRoute': (context) => PageProfile(),
       },
-      home: PageWelcome(),
+      home: PageWelcome(null,null),
     );
   }
 }
 
-class PageWelcome extends StatelessWidget {
-  //TODO replace placeholder
+class PageWelcome extends StatefulWidget {
+  const PageWelcome(this._loc, this._locbg);
+  final permhand.Permission _loc, _locbg;
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.add_comment,
-            ),
-            Text(
-              'Welcome to QuakeKit',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-              '<text>',
-              textAlign: TextAlign.center,
-            ),
-            IconButton(
-                icon: Icon(Icons.wysiwyg),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PageLocServices()),
-                  );
-                }),
-          ],
-        ),
-      ),
-    );
-  }
+  _PageWelcomeState createState() => _PageWelcomeState(_loc, _locbg);
 }
 
-class PageLocServices extends StatefulWidget {
-  @override
-  _PageLocServicesState createState() => _PageLocServicesState();
-}
+class _PageWelcomeState extends State<PageWelcome> {
+  _PageWelcomeState(this._loc, this._locbg);
+  final permhand.Permission _loc, _locbg;
+  permhand.PermissionStatus _locStat;
+  permhand.PermissionStatus _locbgStat;
 
-class _PageLocServicesState extends State<PageLocServices> {
-  permhand.Permission _loc = permhand.Permission.location;
-  permhand.Permission _locbg = permhand.Permission.locationAlways;
-  permhand.PermissionStatus _permissionStatus =
-      permhand.PermissionStatus.undetermined;
+  PageController pageController;
+  String infoButton = "Continue";
+  List<String> texts;
+  int pageindex;
   @override
   void initState() {
     super.initState();
-    requestPerm(_loc).whenComplete(() => requestPerm(_locbg));
+    _locStat = permhand.PermissionStatus.undetermined;
+    _locbgStat = permhand.PermissionStatus.undetermined;
+    _locPerm();
+    testPerm();
+    getPerm();
+    testPerm();
+    pageindex = 0;
+    pageController = PageController(initialPage: pageindex);
+    texts = [
+      "Welcome",
+      "Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.",
+      "Service Permission",
+      "Contacts Permission"
+    ];
   }
 
-  Future<void> requestPerm(permhand.Permission permission) async {
-    final status = await permission.request();
+  void testPerm() async {
+    print(_locStat.toString());
+    print(_locbgStat.toString());
+  }
+
+  void _locPerm() async {
+    final statusLoc = await _loc.status;
+    final statusLocbg = await _locbg.status;
     setState(() {
-      _permissionStatus = status;
-      if (_permissionStatus != permhand.PermissionStatus.granted) {
-        permhand.openAppSettings();
-      }
+      _locStat = statusLoc;
+      _locbgStat = statusLocbg;
     });
+  }
+
+  Future<void> getPerm() async {
+    final statusLoc = await _loc.request();
+    final statusLocbg = await _locbg.request();
+    setState(() {
+      _locStat = statusLoc;
+      _locbgStat = statusLocbg;
+    });
+  }
+
+  void _contactPerm() {
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.add_comment,
-            ),
-            Text(
-              '',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-              'Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.',
-              textAlign: TextAlign.center,
-            ),
-            IconButton(
-              icon: Icon(Icons.wysiwyg),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PageContactsPerm()),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+        resizeToAvoidBottomPadding: false,
+        body: PageView.builder(
+            itemCount: 3,
+            controller: pageController,
+            onPageChanged: (index){
+              setState(() {
+                pageindex = index;
+                if(pageindex < 2){
+                  infoButton = "Continue ";
+                }else{
+                  infoButton = "Next Page";
+                }
+              });
+              debugPrint("Değişti");
+            },
+            itemBuilder: (context, index){
+              return Container(
+                padding: EdgeInsets.only(
+                    left: 11,
+                    right: 11
+                ),
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.deepOrange,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    ),
+                    Expanded(
+                        child: Material(
+                          borderRadius: BorderRadius.circular(60),
+                          elevation: 12,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                                left: 8,
+                                right: 8
+                            ),
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(60)
+                            ),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: Text(turnText(index), style: Theme.of(context).textTheme.headline4, textAlign: TextAlign.center,),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: Text(texts[1], textAlign: TextAlign.center),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.topCenter,
+                                    //color: Colors.white,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: InkWell(
+                                      onTap: (){
+                                        setState(() {
+                                          if(pageindex < 2){
+                                            pageindex++;
+                                            pageController.jumpToPage(pageindex);
+                                            pageindex == 1 ? infoButton = "Continue" : infoButton = "Next Page";
+                                          }else{
+                                            Navigator.push(context,MaterialPageRoute(builder: (context) => PagePhoneHom()));
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.centerLeft,
+                                                  end: Alignment.centerRight,
+                                                  colors: [
+                                                    Colors.teal[300],
+                                                    Colors.teal[400],
+                                                    Colors.teal[500],
+                                                  ]
+                                              ),
+                                              borderRadius: BorderRadius.circular(30),
+                                              border: Border.all(
+                                                  color: Colors.blue,
+                                                  width: 3
+                                              ),
+                                              color: Colors.teal
+                                          ),
+                                          child: Center(child: Text(infoButton,style: TextStyle(fontSize: 24),),)
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            })
     );
   }
-}
-
-class PageContactsPerm extends StatefulWidget {
-  @override
-  _PageContactsPermState createState() => _PageContactsPermState();
-}
-
-class _PageContactsPermState extends State<PageContactsPerm> {
-  permhand.Permission _cont = permhand.Permission.locationAlways;
-  permhand.PermissionStatus _permissionStatus =
-      permhand.PermissionStatus.undetermined;
-  @override
-  void initState() {
-    super.initState();
-    requestPerm(_cont);
-  }
-
-  Future<void> requestPerm(permhand.Permission permission) async {
-    final status = await permission.request();
-    setState(() {
-      _permissionStatus = status;
-      if (_permissionStatus != permhand.PermissionStatus.granted) {
-        permhand.openAppSettings();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.add_comment,
-            ),
-            Text(
-              'Contacts Permission',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-              'Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.',
-              textAlign: TextAlign.center,
-            ),
-            IconButton(
-              icon: Icon(Icons.wysiwyg),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PagePhoneHom()));
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+  String turnText(int index){
+    if(index == 0){
+      return texts[0];
+    }
+    else if(index == 1){
+      return texts[2];
+    }
+    else{
+      return texts[3];
+    }
   }
 }
 
@@ -219,8 +271,8 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
   void initState() {
     super.initState();
     check = false;
-    vCodeCont = TextEditingController();
-    pNumCont = TextEditingController();
+    vCodeCont = TextEditingController(text: "123456");
+    pNumCont = TextEditingController(text: "+905354992959");
   }
 
   void _confirmCheck(bool val) {
@@ -268,73 +320,68 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scKey,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextField(
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp("[+0123456789]"))
-                    ],
-                    maxLines: 1,
-                    maxLength: 13,
-                    controller: pNumCont,
-                    keyboardType: TextInputType.phone,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Phone Number',
-                      contentPadding: EdgeInsets.only(
-                          left: 15, bottom: 11, top: 11, right: 15),
-                      hintText: "+90xxxxxxxxxx",
-                    ),
-                    onChanged: (String newVal) {
-                      setState(() {
-                        _num = newVal;
-                      });
-                    })),
-            Container(
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Checkbox(value: check, onChanged: _confirmCheck),
-              Text("I have read and agreed on the Terms and Conditions"),
-            ])),
-            ElevatedButton(
-              onPressed: () {
-                if (check) {
-                  sendCode();
-                }
-              },
-              child: Text("Send Confirmation Code"),
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextField(
-                  maxLines: 1,
-                  autocorrect: false,
-                  keyboardType: TextInputType.number,
-                  maxLength: 6,
-                  controller: vCodeCont,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Confirmation Code',
+        resizeToAvoidBottomInset: false,
+        key: _scKey,
+        body: Container(
+          color: Colors.blue,
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.red,
+                  child: RaisedButton(
+                      child: Text("asdas"),
+                      onPressed: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => PageAddressData()));
+                      }),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  padding: EdgeInsets.only(
+                      left: 10,
+                      right: 10
                   ),
-                )),
-            ElevatedButton(
-              onPressed: () {
-                confirmCode().then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PageAddressData())));
-              },
-              child: Text("Confirm"),
-            ),
-          ],
-        ),
-      ),
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.yellow,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        maxLength: 13,
+                        maxLines: 1,
+                        controller: pNumCont,
+                        keyboardType: TextInputType.phone,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Phone Number",
+                            hintText: "+90xxxxxxxxxx"
+                        ),
+                        onChanged: (value){
+
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.green,
+                ),
+              ),
+            ],
+          ),
+        )
     );
   }
 }
