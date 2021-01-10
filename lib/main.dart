@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart' as permhand;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,7 +12,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:json_annotation/json_annotation.dart';
+import 'models/EarthQuakeModel.dart';
 import 'models/UserModel.dart';
+import 'models/MeetingAreaModel.dart';
 
 part 'main.g.dart';
 
@@ -34,7 +37,9 @@ class QuakeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'QuakeKit',
       theme: ThemeData(
+        fontFamily: "Raleway",
         primarySwatch: Colors.blue,
+        textTheme: TextTheme(headline4: TextStyle(color: Colors.green), headline6: TextStyle(color: Colors.grey[600]), headline3: TextStyle(color: Colors.red)),
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -203,17 +208,8 @@ class _PageWelcomeState extends State<PageWelcome> {
                                         });
                                       },
                                       child: Container(
-                                          decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                  begin: Alignment.centerLeft,
-                                                  end: Alignment.centerRight,
-                                                  colors: [
-                                                    Colors.teal[300],
-                                                    Colors.teal[400],
-                                                    Colors.teal[500],
-                                                  ]
-                                              ),
-                                              borderRadius: BorderRadius.circular(30),
+                                          decoration: BoxDecoration(                                           
+                                              borderRadius: BorderRadius.circular(30),                                         
                                               border: Border.all(
                                                   color: Colors.blue,
                                                   width: 3
@@ -614,32 +610,90 @@ class PageMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PageSecure()));
-              },
-              elevation: 2.0,
-              disabledColor: Colors.blue,
-              padding: EdgeInsets.all(15.0),
-              shape: CircleBorder(),
-              child: Text("Secure"),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,      
+        child: Row(
+          children: <Widget>[
+            Expanded(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,           
             ),
-            MaterialButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PageSecure()));
-                },
-                elevation: 2.0,
-                disabledColor: Colors.blue,
-                padding: EdgeInsets.all(15.0),
-                shape: CircleBorder(),
-                child: Text("Insecure"))
+          ),
+          Expanded(
+            flex: 6,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,        
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,                   
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      width: double.infinity,
+                      height: double.infinity,                    
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> PageInsecure()));
+                        },
+                        child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.red,
+                        ),
+                        child: Center(child: Text("Güvende Değilim!", style: TextStyle(fontSize: 30))),
+                      ),
+                      )
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      width: double.infinity,
+                      height: double.infinity,                     
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> PageSecure()));
+                        },
+                        child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.green,
+                        ),
+                        child: Center(child: Text("Güvendeyim", style: TextStyle(fontSize: 30),)),
+                      ),
+                      )
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,                  
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,         
+            ),
+          ),
           ],
         ),
       ),
@@ -692,9 +746,30 @@ class _PageSecureState extends State<PageSecure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('This is an example.'),
-      ),
+      body: Container(
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 10
+        ),
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Text("YOUR LOCATION AND HEALTH STATUS HAS BEEN DELIVERED TO YOUR EMERGENCY PEOPLE.", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Text("Warning !", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
+                  SizedBox(height: 15,),
+                  Text("After the shake has passed, electricity, gas and water valves should be closed, stoves and heaters should be turned off. By taking other security measures, the necessary goods and materials should be taken and the building should be left from the previously determined road and go to the assembly area."
+                  ,textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
+                ],
+              ),
+            )
+          ],
+        ),
+      )
     );
   }
 }
@@ -712,9 +787,36 @@ class _PageInsecureState extends State<PageInsecure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('This is an example.'),
-      ),
+      body: Container(
+        padding: EdgeInsets.only(
+          left: 10,
+          right: 10
+        ),
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Text("YOUR LOCATION DATA HAS BEEN TRANSMITTED TO OFFICIALS AND EMERGENCY CONTACTS.", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Text("Warning !", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
+                  SizedBox(height: 15,),
+                  Text("Do not panic. Stay away from unsecured objects such as shelves and windows. If possible, seek shelter by crouching next to a secure object and creating a triangle of life."
+                  ,textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
+                ],
+              ),
+            ),
+            CircleAvatar(
+              backgroundColor: Colors.grey,            
+              maxRadius: 40,
+              minRadius: 25,         
+              child: Text("S.O.S", style: TextStyle(color: Colors.white,)),
+            )
+          ],
+        ),
+      )
     );
   }
 }
@@ -724,79 +826,249 @@ class PageProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body: Center(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              //TODO: fix
-              children: [
-                // Text(
-                //   "profil",
-                //   style: Theme.of(context).textTheme.headline4,
-                // ),
-                Card(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(Icons.portrait),
-                        title: Text("Name Here"),
-                        subtitle: Text("æææ"),
+        body: Container(
+      width: double.infinity,
+      height: double.infinity,
+      //color: Colors.teal,
+      child: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 3,
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                //color: Colors.brown,
+
+                child: Stack(
+                  children: <Widget>[                   
+                    Column( /// Column ı kullanmamın sebebi 2 parcaya ayırmak bu şekilde dinamik hale getirmek cunku 
+                    /// sadece Stack in içinde olunca Expanded bir işe yaramadı
+                      children: <Widget>[
+                      Expanded(/// arkaplandaki turuncu
+                        flex: 3,
+                        child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        padding: EdgeInsets.only(
+                          left: 15,
+                          right: 15,
+                          bottom: 15
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(30),
+                              bottomLeft: Radius.circular(30)
+                            ),
+                          ),
+                        ),
+                        ),
                       ),
-                    ],
-                  ),
+                      Expanded(
+                        flex: 1,
+                        child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                        //color: Colors.yellow,
+                        width: double.infinity,
+                        height: double.infinity,
+                        ),
+                        )
+                      ),
+                      ],
+                    ),
+                    Align( /// yuvarlak resim
+                      alignment: Alignment.bottomCenter,
+                      child: CircleAvatar(
+                      radius: 64,
+                      backgroundColor: Colors.orange,
+                        child: CircleAvatar(
+                        radius: 55,
+                        backgroundImage: AssetImage('assets/images/hbk.jpg'),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                Text(
-                  "Emergency Contacts",
-                  style: Theme.of(context).textTheme.headline4,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                //color: Colors.grey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("HASAN BATUHAN KURT", style: TextStyle(fontFamily: "Ralewayto",fontSize: 22),),
+                    Text("Yazılım Mühendisi", style: TextStyle(fontSize: 16),)
+                  ],
                 ),
-                Card(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [Text("a"), Text("aeae")],
-                  ),
-                )
-              ],
+              ),
             ),
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.blue,
-          shape: const CircularNotchedRectangle(),
-          child: Container(
-            height: 50.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, 'assistRoute');
-                    },
-                    child: Text("Assistant")),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, 'latestRoute');
-                    },
-                    child: Text("Latest")),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, 'mapRoute');
-                    },
-                    child: Text("Map")),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, 'profileRoute');
-                    },
-                    child: Text("Profile"))
-              ],
+            Expanded(
+              flex: 6,
+              child: Container(
+                margin: EdgeInsets.only(
+                  left: 10,
+                  right: 10
+                ),
+                padding: EdgeInsets.only(
+                  top: 15,
+                  left: 15,
+                  right: 15,
+                  bottom: 15
+                ),
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.3),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30)
+                  )
+                ),
+                child: Column(              
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                      margin: EdgeInsets.only(
+                        bottom: 5
+                      ),
+                      child: ListTile(
+                      tileColor: Colors.white,
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                      title: Text("Hakan Sasusagi"),                 
+                      leading: Icon(Icons.supervised_user_circle),
+                    ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 5
+                      ),
+                      child: ListTile(
+                      tileColor: Colors.white,
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                      title: Text("Mert Tiryaki"),                 
+                      leading: Icon(Icons.supervised_user_circle),
+                    ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 5
+                      ),
+                      child: ListTile(
+                      tileColor: Colors.white,
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                      title: Text("Alper Sipahi"),                 
+                      leading: Icon(Icons.supervised_user_circle),
+                    ),
+                    )
+                        ],
+                      ),
+                    ),
+                    ),
+                    Expanded(    
+                      flex: 2,                
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          bottom: 10
+                        ),
+                        width: double.infinity,
+                        height: double.infinity,
+                      child: Column( 
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,                   
+                        children: <Widget>[
+                          CircleAvatar(
+                            maxRadius: 35,
+                            minRadius: 25,
+                            backgroundColor: Colors.grey,
+                             child: Icon(Icons.add),
+                          ),
+                          RaisedButton(
+                            color: Colors.grey,
+                            child: Text("report damage", style: TextStyle(color: Colors.white, fontFamily: "Ralewayto"),),
+                            onPressed: (){}
+                          ),
+                          
+                        ],
+                      ),
+                    ),
+                    )
+                    
+                  ],
+                ),
+              ),
             ),
-          ),
-        ));
+          ],
+      ),
+    )); 
+  }
+  expandedDondur(){
+    return Expanded(
+                      flex: 8,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 8,
+                            child: Container(                             
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(17),
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/kedi.jpg"),
+                                  fit: BoxFit.cover
+                                )
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Expanded(
+                            flex: 8,
+                            child: Container(                             
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(17),
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/kedi.jpg"),
+                                  fit: BoxFit.cover
+                                )
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Expanded(
+                            flex: 8,
+                            child: Container(                             
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(17),
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/kedi.jpg"),
+                                  fit: BoxFit.cover
+                                )
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
   }
 }
 
@@ -878,6 +1150,13 @@ class _PageMapState extends State<PageMap> {
     initLoc();
   }
 
+  Future<List<MeetingAreaModel>> meetingAreaApiCall() async {
+  http.Response response =
+  await http.get("https://quakekit-api.hbksoftware.com.tr/api/MeetingArea");
+  List responseJson = json.decode(response.body);
+  return responseJson.map((m) => new MeetingAreaModel.fromJson(m)).toList();
+}
+
   void initLoc() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
@@ -900,8 +1179,225 @@ class _PageMapState extends State<PageMap> {
 
   final Completer<GoogleMapController> _controller = Completer();
 
+  double zoomVal=5.0;
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          _buildGoogleMap(context),
+          _zoomminusfunction(),
+          _zoomplusfunction(),
+          _buildContainer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _zoomminusfunction() {
+
+    return Align(
+      alignment: Alignment.topLeft,
+      child: IconButton(
+          icon: Icon(FontAwesomeIcons.searchMinus,color:Color(0xff6200ee)),
+          onPressed: () {
+            zoomVal--;
+            _minus( zoomVal);
+          }),
+    );
+  }
+  Widget _zoomplusfunction() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: IconButton(
+          icon: Icon(FontAwesomeIcons.searchPlus,color:Color(0xff6200ee)),
+          onPressed: () {
+            zoomVal++;
+            _plus(zoomVal);
+          }),
+    );
+  }
+
+  Future<void> _minus(double zoomVal) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
+  }
+  Future<void> _plus(double zoomVal) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
+  }
+
+  Widget _buildContainer() {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 20.0),
+        height: 150.0,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            SizedBox(width: 10.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _boxes(
+                  "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
+                  40.738380, -73.988426,"Gramercy Tavern"),
+            ),
+            SizedBox(width: 10.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _boxes(
+                  "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
+                  40.761421, -73.981667,"Le Bernardin"),
+            ),
+            SizedBox(width: 10.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _boxes(
+                  "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+                  40.732128, -73.999619,"Blue Hill"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _boxes(String _image, double lat,double long,String restaurantName) {
+    return  GestureDetector(
+      onTap: () {
+        _gotoLocation(lat,long);
+      },
+      child:Container(
+        child: new FittedBox(
+          child: Material(
+              color: Colors.white,
+              elevation: 14.0,
+              borderRadius: BorderRadius.circular(24.0),
+              shadowColor: Color(0x802196F3),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    width: 180,
+                    height: 200,
+                    child: ClipRRect(
+                      borderRadius: new BorderRadius.circular(24.0),
+                      child: Image(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(_image),
+                      ),
+                    ),),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: myDetailsContainer1(restaurantName),
+                    ),
+                  ),
+
+                ],)
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget myDetailsContainer1(String restaurantName) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Container(
+              child: Text(restaurantName,
+                style: TextStyle(
+                    color: Color(0xff6200ee),
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold),
+              )),
+        ),
+        SizedBox(height:5.0),
+        Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                    child: Text(
+                      "4.1",
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 18.0,
+                      ),
+                    )),
+                Container(
+                  child: Icon(
+                    FontAwesomeIcons.solidStar,
+                    color: Colors.amber,
+                    size: 15.0,
+                  ),
+                ),
+                Container(
+                  child: Icon(
+                    FontAwesomeIcons.solidStar,
+                    color: Colors.amber,
+                    size: 15.0,
+                  ),
+                ),
+                Container(
+                  child: Icon(
+                    FontAwesomeIcons.solidStar,
+                    color: Colors.amber,
+                    size: 15.0,
+                  ),
+                ),
+                Container(
+                  child: Icon(
+                    FontAwesomeIcons.solidStar,
+                    color: Colors.amber,
+                    size: 15.0,
+                  ),
+                ),
+                Container(
+                  child: Icon(
+                    FontAwesomeIcons.solidStarHalf,
+                    color: Colors.amber,
+                    size: 15.0,
+                  ),
+                ),
+                Container(
+                    child: Text(
+                      "(946)",
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 18.0,
+                      ),
+                    )),
+              ],
+            )),
+        SizedBox(height:5.0),
+        Container(
+            child: Text(
+              "American \u00B7 \u0024\u0024 \u00B7 1.6 mi",
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 18.0,
+              ),
+            )),
+        SizedBox(height:5.0),
+        Container(
+            child: Text(
+              "Closed \u00B7 Opens 17:00 Thu",
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold),
+            )),
+      ],
+    );
+  }
+
+  @override
+  Widget _buildGoogleMap(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
         body: Center(
@@ -915,6 +1411,9 @@ class _PageMapState extends State<PageMap> {
               ),
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
+              },
+              markers: {
+                gramercyMarker         
               },
             ),
           ),
@@ -956,7 +1455,23 @@ class _PageMapState extends State<PageMap> {
           ),
         ));
   }
+  Future<void> _gotoLocation(double lat,double long) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(lat, long), zoom: 15,tilt: 50.0,
+      bearing: 45.0,)));
+  }
 }
+
+
+
+Marker gramercyMarker = Marker(
+  markerId: MarkerId('gramercy'),
+  position: LatLng(40.738380, -73.988426),
+  infoWindow: InfoWindow(title: 'Gramercy Tavern'),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueViolet,
+  ),
+);
 
 class PageLatest extends StatefulWidget {
   @override
@@ -978,6 +1493,13 @@ class Quake {
   factory Quake.fromJson(Map<String, dynamic> json) => _$QuakeFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuakeToJson(this);
+}
+
+Future<List<EarthQuakeModel>> quakeCall() async {
+  http.Response response =
+      await http.get("https://quakekit-api.hbksoftware.com.tr/api/EarthQuake");
+  List responseJson = json.decode(response.body);
+  return responseJson.map((m) => new EarthQuakeModel.fromJson(m)).toList();
 }
 
 class _PageLatestState extends State<PageLatest> {
@@ -1011,14 +1533,27 @@ class _PageLatestState extends State<PageLatest> {
         appBar: AppBar(
           title: Text("Latest Earthquakes"),
         ),
-        body: FutureBuilder<List<UserModel>>(
-          future: apiCall(),
+        body: FutureBuilder<List<EarthQuakeModel>>(
+          future: quakeCall(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Container();
-            List<UserModel> userModel = snapshot.data;
-            return new ListView(
-              children: userModel.map((user) => Text(user.uID)).toList(),
-            );
+            List<EarthQuakeModel> earthQuakeModel = snapshot.data;
+            return ListView.builder(
+              itemCount: 50,
+              itemBuilder: (context,index){
+                return Container(
+                  margin: EdgeInsets.only(
+                    bottom: 5
+                  ),
+                  color: Colors.grey[400],
+                  child: ListTile(                              
+                  trailing: earthQuakeModel.map((earthQuake) => Text("Büyüklük:  " + earthQuake.eqSize)).toList().elementAt(index),
+                  title: earthQuakeModel.map((earthQuake) => Text(earthQuake.eqLocationName)).toList().elementAt(index),
+                  subtitle: earthQuakeModel.map((earthQuake) => Text(earthQuake.eqTime + "   " + earthQuake.eqDate)).toList().elementAt(index),                           
+                  ),
+                );
+              }
+              );
           },
         ),
         bottomNavigationBar: BottomAppBar(
