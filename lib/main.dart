@@ -20,8 +20,9 @@ Future<void> main() async {
   await Firebase.initializeApp().then((value) => runApp(QuakeApp()));
 }
 
-Future <List<UserModel>> apiCall() async{
-  http.Response response = await http.get("https://quakekit-api.hbksoftware.com.tr/api/User");
+Future<List<UserModel>> apiCall() async {
+  http.Response response =
+      await http.get("https://quakekit-api.hbksoftware.com.tr/api/User");
   List responseJson = json.decode(response.body);
   return responseJson.map((m) => new UserModel.fromJson(m)).toList();
 }
@@ -207,8 +208,6 @@ class PagePhoneHom extends StatefulWidget {
   _PagePhoneHomState createState() => _PagePhoneHomState();
 }
 
-UserProfile user = new UserProfile();
-
 class _PagePhoneHomState extends State<PagePhoneHom> {
   final _scKey = GlobalKey<ScaffoldState>();
   bool check;
@@ -331,8 +330,6 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => PageAddressData())));
-
-                user.phoneNum = pNumCont.text;
               },
               child: Text("Confirm"),
             ),
@@ -456,9 +453,7 @@ class _PageAddressDataState extends State<PageAddressData> {
                   border: OutlineInputBorder(),
                   labelText: 'City',
                 ),
-                onChanged: (String newValue) {
-                  user.city = newValue;
-                }),
+                onChanged: (String newValue) {}),
             TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -758,44 +753,6 @@ class PageProfile extends StatelessWidget {
   }
 }
 
-@JsonSerializable() //TODO marker for future reference--------------------------------------------------
-class UserProfile {
-  String name,
-      surname,
-      phoneNum,
-      mail,
-      gender,
-      birthDate,
-      bloodType,
-      city,
-      district,
-      nbhood,
-      building,
-      floor,
-      condo,
-      addressDesc; //spain but s is silent
-  UserProfile(
-      {this.name,
-      this.surname,
-      this.phoneNum,
-      this.mail,
-      this.gender,
-      this.birthDate,
-      this.bloodType,
-      this.city,
-      this.district,
-      this.nbhood,
-      this.building,
-      this.floor,
-      this.condo,
-      this.addressDesc});
-
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
-}
-
 class PageNewProfile extends StatefulWidget {
   @override
   _PageNewProfileState createState() => _PageNewProfileState();
@@ -1009,8 +966,8 @@ class _PageLatestState extends State<PageLatest> {
         ),
         body: FutureBuilder<List<UserModel>>(
           future: apiCall(),
-          builder: (context, snapshot){
-            if(!snapshot.hasData) return Container();
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Container();
             List<UserModel> userModel = snapshot.data;
             return new ListView(
               children: userModel.map((user) => Text(user.uID)).toList(),
