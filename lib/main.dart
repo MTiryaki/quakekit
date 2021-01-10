@@ -292,6 +292,9 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Phone Number',
+                      contentPadding: EdgeInsets.only(
+                          left: 15, bottom: 11, top: 11, right: 15),
+                      hintText: "+90xxxxxxxxxx",
                     ),
                     onChanged: (String newVal) {
                       setState(() {
