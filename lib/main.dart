@@ -20,26 +20,6 @@ Future<void> main() async {
   runApp(QuakeApp());
 }
 
-/*
-class InitBuild extends StatelessWidget {
-  final Future<FirebaseApp> _init = Firebase.initializeApp();
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _init,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return QuakeApp(-1);
-        }
-        if (snapshot.connectionState == ConnectionState.done) {
-          return QuakeApp(1);
-        }
-        return QuakeApp(0);
-      },
-    );
-  }
-}
-*/
 class QuakeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -115,7 +95,6 @@ class _PageLocServicesState extends State<PageLocServices> {
   @override
   void initState() {
     super.initState();
-
     _locStat = permhand.PermissionStatus.undetermined;
     _locbgStat = permhand.PermissionStatus.undetermined;
     _locPerm();
@@ -529,8 +508,31 @@ class _PageAddressDataState extends State<PageAddressData> {
   }
 }
 
-class PageEmergencyContacts extends StatelessWidget {
-  //TODO actually implement this ffs
+class PageEmergencyContacts extends StatefulWidget {
+  @override
+  _PageEmergencyContactsState createState() => _PageEmergencyContactsState();
+}
+
+class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
+  Contact _contact;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _pickContact() async {
+    try {
+      final Contact contact = await ContactsService.openDeviceContactPicker(
+          iOSLocalizedLabels: false);
+      setState(() {
+        _contact = contact;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -545,6 +547,10 @@ class PageEmergencyContacts extends StatelessWidget {
             Text(
               'Good morning, and welcome to the Black Mesa Transit System.',
               textAlign: TextAlign.center,
+            ),
+            RaisedButton(
+              child: const Text('Pick a contact'),
+              onPressed: _pickContact,
             ),
             IconButton(
               icon: Icon(Icons.wysiwyg),
@@ -832,8 +838,44 @@ class _PageNewProfileState extends State<PageNewProfile> {
   }
 }
 
-class PageMap extends StatelessWidget {
+class PageMap extends StatefulWidget {
+  @override
+  _PageMapState createState() => _PageMapState();
+}
+
+class _PageMapState extends State<PageMap> {
+  Location location = new Location();
+  bool _serviceEnabled;
+  LocationData _locData;
+  PermissionStatus _permissionGranted;
+  @override
+  void initState() {
+    super.initState();
+    initLoc();
+  }
+
+  void initLoc() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locData = await location.getLocation();
+  }
+
   final Completer<GoogleMapController> _controller = Completer();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
