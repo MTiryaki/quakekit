@@ -11,12 +11,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:json_annotation/json_annotation.dart';
+import 'models/UserModel.dart';
 
 part 'main.g.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp().then((value) => runApp(QuakeApp()));
+}
+
+Future <List<UserModel>> apiCall() async{
+  http.Response response = await http.get("https://quakekit-api.hbksoftware.com.tr/api/User");
+  List responseJson = json.decode(response.body);
+  return responseJson.map((m) => new UserModel.fromJson(m)).toList();
 }
 
 class QuakeApp extends StatelessWidget {
@@ -974,21 +981,15 @@ class _PageLatestState extends State<PageLatest> {
         appBar: AppBar(
           title: Text("Latest Earthquakes"),
         ),
-        body: Center(
-          child: ListView.builder(
-            itemCount: 50,
-            itemBuilder: (context, index) {
-              return Card(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text("${quakes[index].locName}"),
-                    Text("${quakes[index].sizes}")
-                  ],
-                ),
-              );
-            },
-          ),
+        body: FutureBuilder<List<UserModel>>(
+          future: apiCall(),
+          builder: (context, snapshot){
+            if(!snapshot.hasData) return Container();
+            List<UserModel> userModel = snapshot.data;
+            return new ListView(
+              children: userModel.map((user) => Text(user.uID)).toList(),
+            );
+          },
         ),
         bottomNavigationBar: BottomAppBar(
           color: Colors.blue,
