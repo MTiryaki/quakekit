@@ -46,6 +46,6 @@
     <key>NSLocationAlwaysUsageDescription</key>
 	<string>LocInUse</string>
 	<key>NSContactsUsageDescription</key>  
-<string>This app requires contacts access to function properly.</string>  
+    <string>This app requires contacts access to function properly.</string>  
 </dict>
 </plist>

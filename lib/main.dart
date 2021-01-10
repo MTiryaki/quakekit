@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart' as permhand;
+//import 'package:location/location.dart';
+//import 'package:permission_handler/permission_handler.dart' as permhand;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:contacts_service/contacts_service.dart';
+//import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart'; //TODO set the fuck up
+import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -69,8 +69,7 @@ class PageWelcome extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => PageLocServices(null, null)),
+                    MaterialPageRoute(builder: (context) => PageLocServices()),
                   );
                 }),
           ],
@@ -81,50 +80,30 @@ class PageWelcome extends StatelessWidget {
 }
 
 class PageLocServices extends StatefulWidget {
-  const PageLocServices(this._loc, this._locbg);
-  final permhand.Permission _loc, _locbg;
   @override
-  _PageLocServicesState createState() => _PageLocServicesState(_loc, _locbg);
+  _PageLocServicesState createState() => _PageLocServicesState();
 }
 
 class _PageLocServicesState extends State<PageLocServices> {
-  _PageLocServicesState(this._loc, this._locbg); //TODO what the fuck is this
-  final permhand.Permission _loc, _locbg;
-  permhand.PermissionStatus _locStat;
-  permhand.PermissionStatus _locbgStat;
+/*  permhand.Permission _loc = permhand.Permission.location;
+  permhand.Permission _locbg = permhand.Permission.locationAlways;
+  permhand.PermissionStatus _permissionStatus =
+      permhand.PermissionStatus.undetermined;
   @override
   void initState() {
     super.initState();
-    _locStat = permhand.PermissionStatus.undetermined;
-    _locbgStat = permhand.PermissionStatus.undetermined;
-    _locPerm();
-    testPerm();
-    getPerm();
-    testPerm();
+    requestPerm(_loc).whenComplete(() => requestPerm(_locbg));
   }
 
-  void testPerm() async {
-    print(_locStat.toString());
-    print(_locbgStat.toString());
-  }
-
-  void _locPerm() async {
-    final statusLoc = await _loc.status;
-    final statusLocbg = await _locbg.status;
+  Future<void> requestPerm(permhand.Permission permission) async {
+    final status = await permission.request();
     setState(() {
-      _locStat = statusLoc;
-      _locbgStat = statusLocbg;
+      _permissionStatus = status;
+      if (_permissionStatus != permhand.PermissionStatus.granted) {
+        permhand.openAppSettings();
+      }
     });
-  }
-
-  Future<void> getPerm() async {
-    final statusLoc = await _loc.request();
-    final statusLocbg = await _locbg.request();
-    setState(() {
-      _locStat = statusLoc;
-      _locbgStat = statusLocbg;
-    });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -166,15 +145,25 @@ class PageContactsPerm extends StatefulWidget {
 }
 
 class _PageContactsPermState extends State<PageContactsPerm> {
-  @override //TODO contacts permission state
+/*  permhand.Permission _cont = permhand.Permission.locationAlways;
+  permhand.PermissionStatus _permissionStatus =
+      permhand.PermissionStatus.undetermined;
+  @override
   void initState() {
     super.initState();
+    requestPerm(_cont);
   }
 
-  void _contactPerm() {
-    //fuck.
+  Future<void> requestPerm(permhand.Permission permission) async {
+    final status = await permission.request();
+    setState(() {
+      _permissionStatus = status;
+      if (_permissionStatus != permhand.PermissionStatus.granted) {
+        permhand.openAppSettings();
+      }
+    });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -517,14 +506,14 @@ class PageEmergencyContacts extends StatefulWidget {
 }
 
 class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
-  Contact _contact;
+  //Contact _contact;
 
   @override
   void initState() {
     super.initState();
   }
 
-  Future<void> _pickContact() async {
+  /*Future<void> _pickContact() async {
     try {
       final Contact contact = await ContactsService.openDeviceContactPicker(
           iOSLocalizedLabels: false);
@@ -534,7 +523,7 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
     } catch (e) {
       print(e.toString());
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -552,9 +541,9 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
               textAlign: TextAlign.center,
             ),
             RaisedButton(
-              child: const Text('Pick a contact'),
-              onPressed: _pickContact,
-            ),
+                child: const Text('Pick a contact'),
+                onPressed: null //_pickContact,
+                ),
             IconButton(
               icon: Icon(Icons.wysiwyg),
               onPressed: () {
@@ -847,7 +836,7 @@ class PageMap extends StatefulWidget {
 }
 
 class _PageMapState extends State<PageMap> {
-  Location location = new Location();
+  /* Location location = new Location();
   bool _serviceEnabled;
   LocationData _locData;
   PermissionStatus _permissionGranted;
@@ -875,7 +864,7 @@ class _PageMapState extends State<PageMap> {
     }
 
     _locData = await location.getLocation();
-  }
+  }*/
 
   final Completer<GoogleMapController> _controller = Completer();
 
