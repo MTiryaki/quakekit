@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:location/location.dart';
-//import 'package:permission_handler/permission_handler.dart' as permhand;
+import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart' as permhand;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-//import 'package:contacts_service/contacts_service.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
@@ -16,8 +16,7 @@ part 'main.g.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(QuakeApp());
+  await Firebase.initializeApp().then((value) => runApp(QuakeApp()));
 }
 
 class QuakeApp extends StatelessWidget {
@@ -57,11 +56,11 @@ class PageWelcome extends StatelessWidget {
               Icons.add_comment,
             ),
             Text(
-              'Welcome',
+              'Welcome to QuakeKit',
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(
-              'Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.',
+              '<text>',
               textAlign: TextAlign.center,
             ),
             IconButton(
@@ -85,7 +84,7 @@ class PageLocServices extends StatefulWidget {
 }
 
 class _PageLocServicesState extends State<PageLocServices> {
-/*  permhand.Permission _loc = permhand.Permission.location;
+  permhand.Permission _loc = permhand.Permission.location;
   permhand.Permission _locbg = permhand.Permission.locationAlways;
   permhand.PermissionStatus _permissionStatus =
       permhand.PermissionStatus.undetermined;
@@ -103,7 +102,7 @@ class _PageLocServicesState extends State<PageLocServices> {
         permhand.openAppSettings();
       }
     });
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +144,7 @@ class PageContactsPerm extends StatefulWidget {
 }
 
 class _PageContactsPermState extends State<PageContactsPerm> {
-/*  permhand.Permission _cont = permhand.Permission.locationAlways;
+  permhand.Permission _cont = permhand.Permission.locationAlways;
   permhand.PermissionStatus _permissionStatus =
       permhand.PermissionStatus.undetermined;
   @override
@@ -163,7 +162,7 @@ class _PageContactsPermState extends State<PageContactsPerm> {
       }
     });
   }
-*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -506,14 +505,14 @@ class PageEmergencyContacts extends StatefulWidget {
 }
 
 class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
-  //Contact _contact;
+  Contact _contact;
 
   @override
   void initState() {
     super.initState();
   }
 
-  /*Future<void> _pickContact() async {
+  Future<void> _pickContact() async {
     try {
       final Contact contact = await ContactsService.openDeviceContactPicker(
           iOSLocalizedLabels: false);
@@ -523,7 +522,7 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
     } catch (e) {
       print(e.toString());
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -541,9 +540,9 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
               textAlign: TextAlign.center,
             ),
             RaisedButton(
-                child: const Text('Pick a contact'),
-                onPressed: null //_pickContact,
-                ),
+              child: const Text('Pick a contact'),
+              onPressed: _pickContact,
+            ),
             IconButton(
               icon: Icon(Icons.wysiwyg),
               onPressed: () {
@@ -654,7 +653,6 @@ class PageInsecure extends StatefulWidget {
 class _PageInsecureState extends State<PageInsecure> {
   void initState() {
     super.initState();
-    //TODO send current location and current status
   }
 
   @override
@@ -701,10 +699,7 @@ class PageProfile extends StatelessWidget {
                 Card(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text("a"),
-                      Text("aeae")
-                    ], //TODO: feed data from emergency contacts
+                    children: [Text("a"), Text("aeae")],
                   ),
                 )
               ],
@@ -836,7 +831,7 @@ class PageMap extends StatefulWidget {
 }
 
 class _PageMapState extends State<PageMap> {
-  /* Location location = new Location();
+  Location location = new Location();
   bool _serviceEnabled;
   LocationData _locData;
   PermissionStatus _permissionGranted;
@@ -864,7 +859,7 @@ class _PageMapState extends State<PageMap> {
     }
 
     _locData = await location.getLocation();
-  }*/
+  }
 
   final Completer<GoogleMapController> _controller = Completer();
 
