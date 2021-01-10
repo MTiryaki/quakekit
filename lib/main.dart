@@ -200,6 +200,8 @@ class PagePhoneHom extends StatefulWidget {
   _PagePhoneHomState createState() => _PagePhoneHomState();
 }
 
+UserProfile user = new UserProfile();
+
 class _PagePhoneHomState extends State<PagePhoneHom> {
   final _scKey = GlobalKey<ScaffoldState>();
   bool check;
@@ -322,6 +324,8 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => PageAddressData())));
+
+                user.phoneNum = pNumCont.text;
               },
               child: Text("Confirm"),
             ),
@@ -445,36 +449,37 @@ class _PageAddressDataState extends State<PageAddressData> {
                   border: OutlineInputBorder(),
                   labelText: 'City',
                 ),
-                onChanged: (String newValue) {}),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.5),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'District',
-                ),
-              ), /* on hold for reasons
-              DropdownButtonFormField(
-                  items: null,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'District',
-                  ),
-                  onChanged: null),*/
+                onChanged: (String newValue) {
+                  user.city = newValue;
+                }),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'District',
+              ),
             ),
             TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Address Line 2',
+                labelText: 'Neighborhood',
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.5),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Address Line 2',
-                ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Building',
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Floor',
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Condo',
               ),
             ),
             TextField(
@@ -504,9 +509,9 @@ class PageEmergencyContacts extends StatefulWidget {
   _PageEmergencyContactsState createState() => _PageEmergencyContactsState();
 }
 
-class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
-  Contact _contact;
+List<Contact> emergencyContacts = new List<Contact>();
 
+class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
   @override
   void initState() {
     super.initState();
@@ -517,7 +522,7 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
       final Contact contact = await ContactsService.openDeviceContactPicker(
           iOSLocalizedLabels: false);
       setState(() {
-        _contact = contact;
+        emergencyContacts.add(contact);
       });
     } catch (e) {
       print(e.toString());
@@ -686,6 +691,7 @@ class PageProfile extends StatelessWidget {
                   child: Column(
                     children: [
                       ListTile(
+                        leading: Icon(Icons.portrait),
                         title: Text("Name Here"),
                         subtitle: Text("æææ"),
                       ),
@@ -745,17 +751,37 @@ class PageProfile extends StatelessWidget {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable() //TODO marker for future reference--------------------------------------------------
 class UserProfile {
-  final String locName, depth, sizes, lat, lng, date, time;
+  String name,
+      surname,
+      phoneNum,
+      mail,
+      gender,
+      birthDate,
+      bloodType,
+      city,
+      district,
+      nbhood,
+      building,
+      floor,
+      condo,
+      addressDesc; //spain but s is silent
   UserProfile(
-      {this.locName,
-      this.depth,
-      this.sizes,
-      this.lat,
-      this.lng,
-      this.date,
-      this.time});
+      {this.name,
+      this.surname,
+      this.phoneNum,
+      this.mail,
+      this.gender,
+      this.birthDate,
+      this.bloodType,
+      this.city,
+      this.district,
+      this.nbhood,
+      this.building,
+      this.floor,
+      this.condo,
+      this.addressDesc});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
