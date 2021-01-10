@@ -319,8 +319,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scKey,
-        body: Container(
-          color: Colors.blue,
+        body: Container(         
           width: double.infinity,
           height: double.infinity,
           child: Column(
@@ -328,13 +327,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.red,
-                  child: RaisedButton(
-                      child: Text("asdas"),
-                      onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => PageAddressData()));
-                      }),
+                  height: double.infinity,                               
                 ),
               ),
               Expanded(
@@ -345,8 +338,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                       right: 10
                   ),
                   width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.yellow,
+                  height: double.infinity,               
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -362,9 +354,54 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                             hintText: "+90xxxxxxxxxx"
                         ),
                         onChanged: (value){
-
+                          _num = value;
                         },
-                      )
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Container(                             
+                              child: Checkbox(
+                                value: check, onChanged: _confirmCheck,
+                              ),
+                            ),                        
+                          Container(                             
+                              child: Text("I have read and agreed on \nthe Terms and Conditions"),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (check) {
+                            sendCode();
+                          }
+                        },
+                        child: Text("Send Confirmation Code"),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: 20
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: TextField(
+                        maxLines: 1,
+                        autocorrect: false,
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+                        controller: vCodeCont,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Confirmation Code',
+                        ),
+                      )),
+                      ElevatedButton(
+                        onPressed: () {
+                        confirmCode().then((value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                        builder: (context) => PageAddressData())));
+                        },
+                        child: Text("Confirm"),
+                      ),
                     ],
                   ),
                 ),
@@ -372,8 +409,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.green,
+                  height: double.infinity,                
                 ),
               ),
             ],
@@ -1240,22 +1276,22 @@ class _PageMapState extends State<PageMap> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
-                  40.738380, -73.988426,"Gramercy Tavern"),
+                  "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+                  41.081196, 28.925081,"Yayla Sokak Parkı"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.761421, -73.981667,"Le Bernardin"),
+                  40.990063, 28.899872,"Kadriye Gök Parkı"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.994648, 28.914356,"Stad Parkı"),
             ),
           ],
         ),
@@ -1323,7 +1359,7 @@ class _PageMapState extends State<PageMap> {
               children: <Widget>[
                 Container(
                     child: Text(
-                      "4.1",
+                      "",
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 18.0,
@@ -1366,7 +1402,7 @@ class _PageMapState extends State<PageMap> {
                 ),
                 Container(
                     child: Text(
-                      "(946)",
+                      "",
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 18.0,
@@ -1377,7 +1413,7 @@ class _PageMapState extends State<PageMap> {
         SizedBox(height:5.0),
         Container(
             child: Text(
-              "American \u00B7 \u0024\u0024 \u00B7 1.6 mi",
+              "",
               style: TextStyle(
                 color: Colors.black54,
                 fontSize: 18.0,
@@ -1386,7 +1422,7 @@ class _PageMapState extends State<PageMap> {
         SizedBox(height:5.0),
         Container(
             child: Text(
-              "Closed \u00B7 Opens 17:00 Thu",
+              "",
               style: TextStyle(
                   color: Colors.black54,
                   fontSize: 18.0,
@@ -1406,14 +1442,14 @@ class _PageMapState extends State<PageMap> {
             child: GoogleMap(
               mapType: MapType.normal,
               initialCameraPosition: CameraPosition(
-                target: LatLng(41.042169, 29.0070704),
+                target: LatLng(41.081196, 28.925081),
                 zoom: 17,
               ),
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
               markers: {
-                gramercyMarker         
+                marker1, marker2, marker3         
               },
             ),
           ),
@@ -1464,10 +1500,28 @@ class _PageMapState extends State<PageMap> {
 
 
 
-Marker gramercyMarker = Marker(
-  markerId: MarkerId('gramercy'),
-  position: LatLng(40.738380, -73.988426),
-  infoWindow: InfoWindow(title: 'Gramercy Tavern'),
+Marker marker1 = Marker(
+  markerId: MarkerId('marker1'),
+  position: LatLng(41.081196, 28.925081),
+  infoWindow: InfoWindow(title: 'Yayla Sokak Parkı'),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueViolet,
+  ),
+);
+
+Marker marker2 = Marker(
+  markerId: MarkerId('marker2'),
+  position: LatLng(40.990063, 28.899872),
+  infoWindow: InfoWindow(title: 'Kadriye Gök Parkı'),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueViolet,
+  ),
+);
+
+Marker marker3 = Marker(
+  markerId: MarkerId('marker3'),
+  position: LatLng(40.994648, 28.914356),
+  infoWindow: InfoWindow(title: 'Stad Parkı'),
   icon: BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueViolet,
   ),
