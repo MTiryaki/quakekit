@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 //import 'package:permission_handler/permission_handler.dart' as permhand;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:contacts_service/contacts_service.dart';
+//import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
@@ -506,14 +506,14 @@ class PageEmergencyContacts extends StatefulWidget {
 }
 
 class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
-  Contact _contact;
+  //Contact _contact;
 
   @override
   void initState() {
     super.initState();
   }
 
-  Future<void> _pickContact() async {
+  /*Future<void> _pickContact() async {
     try {
       final Contact contact = await ContactsService.openDeviceContactPicker(
           iOSLocalizedLabels: false);
@@ -523,7 +523,7 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
     } catch (e) {
       print(e.toString());
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -541,9 +541,9 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
               textAlign: TextAlign.center,
             ),
             RaisedButton(
-              child: const Text('Pick a contact'),
-              onPressed: _pickContact,
-            ),
+                child: const Text('Pick a contact'),
+                onPressed: null //_pickContact,
+                ),
             IconButton(
               icon: Icon(Icons.wysiwyg),
               onPressed: () {
@@ -836,7 +836,7 @@ class PageMap extends StatefulWidget {
 }
 
 class _PageMapState extends State<PageMap> {
-  Location location = new Location();
+  /* Location location = new Location();
   bool _serviceEnabled;
   LocationData _locData;
   PermissionStatus _permissionGranted;
@@ -864,7 +864,7 @@ class _PageMapState extends State<PageMap> {
     }
 
     _locData = await location.getLocation();
-  }
+  }*/
 
   final Completer<GoogleMapController> _controller = Completer();
 
