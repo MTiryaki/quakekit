@@ -20,8 +20,9 @@ Future<void> main() async {
   await Firebase.initializeApp().then((value) => runApp(QuakeApp()));
 }
 
-Future <List<UserModel>> apiCall() async{
-  http.Response response = await http.get("https://quakekit-api.hbksoftware.com.tr/api/User");
+Future<List<UserModel>> apiCall() async {
+  http.Response response =
+      await http.get("https://quakekit-api.hbksoftware.com.tr/api/User");
   List responseJson = json.decode(response.body);
   return responseJson.map((m) => new UserModel.fromJson(m)).toList();
 }
@@ -500,35 +501,34 @@ class _PageAddressDataState extends State<PageAddressData> {
                   labelText: 'City',
                 ),
                 onChanged: (String newValue) {}),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.5),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'District',
-                ),
-              ), /* on hold for reasons
-              DropdownButtonFormField(
-                  items: null,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'District',
-                  ),
-                  onChanged: null),*/
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'District',
+              ),
             ),
             TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Address Line 2',
+                labelText: 'Neighborhood',
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.5),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Address Line 2',
-                ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Building',
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Floor',
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Condo',
               ),
             ),
             TextField(
@@ -558,9 +558,9 @@ class PageEmergencyContacts extends StatefulWidget {
   _PageEmergencyContactsState createState() => _PageEmergencyContactsState();
 }
 
-class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
-  Contact _contact;
+List<Contact> emergencyContacts = new List<Contact>();
 
+class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
   @override
   void initState() {
     super.initState();
@@ -571,7 +571,7 @@ class _PageEmergencyContactsState extends State<PageEmergencyContacts> {
       final Contact contact = await ContactsService.openDeviceContactPicker(
           iOSLocalizedLabels: false);
       setState(() {
-        _contact = contact;
+        emergencyContacts.add(contact);
       });
     } catch (e) {
       print(e.toString());
@@ -740,6 +740,7 @@ class PageProfile extends StatelessWidget {
                   child: Column(
                     children: [
                       ListTile(
+                        leading: Icon(Icons.portrait),
                         title: Text("Name Here"),
                         subtitle: Text("æææ"),
                       ),
@@ -797,24 +798,6 @@ class PageProfile extends StatelessWidget {
           ),
         ));
   }
-}
-
-@JsonSerializable()
-class UserProfile {
-  final String locName, depth, sizes, lat, lng, date, time;
-  UserProfile(
-      {this.locName,
-      this.depth,
-      this.sizes,
-      this.lat,
-      this.lng,
-      this.date,
-      this.time});
-
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
 }
 
 class PageNewProfile extends StatefulWidget {
@@ -1030,8 +1013,8 @@ class _PageLatestState extends State<PageLatest> {
         ),
         body: FutureBuilder<List<UserModel>>(
           future: apiCall(),
-          builder: (context, snapshot){
-            if(!snapshot.hasData) return Container();
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Container();
             List<UserModel> userModel = snapshot.data;
             return new ListView(
               children: userModel.map((user) => Text(user.uID)).toList(),
