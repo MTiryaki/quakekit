@@ -39,7 +39,10 @@ class QuakeApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Raleway",
         primarySwatch: Colors.blue,
-        textTheme: TextTheme(headline4: TextStyle(color: Colors.green), headline6: TextStyle(color: Colors.grey[600]), headline3: TextStyle(color: Colors.red)),
+        textTheme: TextTheme(
+            headline4: TextStyle(color: Colors.green),
+            headline6: TextStyle(color: Colors.grey[600]),
+            headline3: TextStyle(color: Colors.red)),
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -52,7 +55,7 @@ class QuakeApp extends StatelessWidget {
         'latestRoute': (context) => PageLatest(),
         'profileRoute': (context) => PageProfile(),
       },
-      home: PageWelcome(null,null),
+      home: PageWelcome(null, null),
     );
   }
 }
@@ -85,12 +88,7 @@ class _PageWelcomeState extends State<PageWelcome> {
     testPerm();
     pageindex = 0;
     pageController = PageController(initialPage: pageindex);
-    texts = [
-      "Welcome",
-      "Good morning, and welcome to the Black Mesa Transit System. This automated train is provided for the comfort and convenience of Black Mesa Research Facility personnel.",
-      "Service Permission",
-      "Contacts Permission"
-    ];
+    texts = ["Welcome", "Service Permission", "Contacts Permission"];
   }
 
   void testPerm() async {
@@ -116,9 +114,7 @@ class _PageWelcomeState extends State<PageWelcome> {
     });
   }
 
-  void _contactPerm() {
-
-  }
+  void _contactPerm() {}
 
   @override
   Widget build(BuildContext context) {
@@ -127,23 +123,20 @@ class _PageWelcomeState extends State<PageWelcome> {
         body: PageView.builder(
             itemCount: 3,
             controller: pageController,
-            onPageChanged: (index){
+            onPageChanged: (index) {
               setState(() {
                 pageindex = index;
-                if(pageindex < 2){
+                if (pageindex < 2) {
                   infoButton = "Continue ";
-                }else{
+                } else {
                   infoButton = "Next Page";
                 }
               });
               debugPrint("Değişti");
             },
-            itemBuilder: (context, index){
+            itemBuilder: (context, index) {
               return Container(
-                padding: EdgeInsets.only(
-                    left: 11,
-                    right: 11
-                ),
+                padding: EdgeInsets.only(left: 11, right: 11),
                 width: double.infinity,
                 height: double.infinity,
                 color: Colors.deepOrange,
@@ -158,74 +151,82 @@ class _PageWelcomeState extends State<PageWelcome> {
                     ),
                     Expanded(
                         child: Material(
-                          borderRadius: BorderRadius.circular(60),
-                          elevation: 12,
-                          child: Container(
-                            padding: EdgeInsets.only(
-                                left: 8,
-                                right: 8
-                            ),
-                            width: double.infinity,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(60)
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.bottomCenter,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: Text(turnText(index), style: Theme.of(context).textTheme.headline4, textAlign: TextAlign.center,),
-                                  ),
+                      borderRadius: BorderRadius.circular(60),
+                      elevation: 12,
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.orange,
+                            borderRadius: BorderRadius.circular(60)),
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.bottomCenter,
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: Text(
+                                  turnText(index),
+                                  style: Theme.of(context).textTheme.headline4,
+                                  textAlign: TextAlign.center,
                                 ),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: Text(texts[1], textAlign: TextAlign.center),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.topCenter,
-                                    //color: Colors.white,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: InkWell(
-                                      onTap: (){
-                                        setState(() {
-                                          if(pageindex < 2){
-                                            pageindex++;
-                                            pageController.jumpToPage(pageindex);
-                                            pageindex == 1 ? infoButton = "Continue" : infoButton = "Next Page";
-                                          }else{
-                                            Navigator.push(context,MaterialPageRoute(builder: (context) => PagePhoneHom()));
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                          decoration: BoxDecoration(                                           
-                                              borderRadius: BorderRadius.circular(30),                                         
-                                              border: Border.all(
-                                                  color: Colors.blue,
-                                                  width: 3
-                                              ),
-                                              color: Colors.teal
-                                          ),
-                                          child: Center(child: Text(infoButton,style: TextStyle(fontSize: 24),),)
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        )
-                    ),
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                height: double.infinity,
+                                child:
+                                    Text(texts[1], textAlign: TextAlign.center),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.topCenter,
+                                //color: Colors.white,
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (pageindex < 2) {
+                                        pageindex++;
+                                        pageController.jumpToPage(pageindex);
+                                        pageindex == 1
+                                            ? infoButton = "Continue"
+                                            : infoButton = "Next Page";
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PagePhoneHom()));
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          border: Border.all(
+                                              color: Colors.blue, width: 3),
+                                          color: Colors.teal),
+                                      child: Center(
+                                        child: Text(
+                                          infoButton,
+                                          style: TextStyle(fontSize: 24),
+                                        ),
+                                      )),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
                     Expanded(
                       child: Container(
                         width: double.infinity,
@@ -235,17 +236,15 @@ class _PageWelcomeState extends State<PageWelcome> {
                   ],
                 ),
               );
-            })
-    );
+            }));
   }
-  String turnText(int index){
-    if(index == 0){
+
+  String turnText(int index) {
+    if (index == 0) {
       return texts[0];
-    }
-    else if(index == 1){
+    } else if (index == 1) {
       return texts[2];
-    }
-    else{
+    } else {
       return texts[3];
     }
   }
@@ -319,7 +318,7 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scKey,
-        body: Container(         
+        body: Container(
           width: double.infinity,
           height: double.infinity,
           child: Column(
@@ -327,18 +326,15 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: double.infinity,                               
+                  height: double.infinity,
                 ),
               ),
               Expanded(
                 flex: 3,
                 child: Container(
-                  padding: EdgeInsets.only(
-                      left: 10,
-                      right: 10
-                  ),
+                  padding: EdgeInsets.only(left: 10, right: 10),
                   width: double.infinity,
-                  height: double.infinity,               
+                  height: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -351,21 +347,22 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Phone Number",
-                            hintText: "+90xxxxxxxxxx"
-                        ),
-                        onChanged: (value){
+                            hintText: "+90xxxxxxxxxx"),
+                        onChanged: (value) {
                           _num = value;
                         },
                       ),
                       Row(
                         children: <Widget>[
-                          Container(                             
-                              child: Checkbox(
-                                value: check, onChanged: _confirmCheck,
-                              ),
-                            ),                        
-                          Container(                             
-                              child: Text("I have read and agreed on \nthe Terms and Conditions"),
+                          Container(
+                            child: Checkbox(
+                              value: check,
+                              onChanged: _confirmCheck,
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                                "I have read and agreed on \nthe Terms and Conditions"),
                           ),
                         ],
                       ),
@@ -378,27 +375,25 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
                         child: Text("Send Confirmation Code"),
                       ),
                       Container(
-                        margin: EdgeInsets.only(
-                          top: 20
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: TextField(
-                        maxLines: 1,
-                        autocorrect: false,
-                        keyboardType: TextInputType.number,
-                        maxLength: 6,
-                        controller: vCodeCont,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Confirmation Code',
-                        ),
-                      )),
+                          margin: EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: TextField(
+                            maxLines: 1,
+                            autocorrect: false,
+                            keyboardType: TextInputType.number,
+                            maxLength: 6,
+                            controller: vCodeCont,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Confirmation Code',
+                            ),
+                          )),
                       ElevatedButton(
                         onPressed: () {
-                        confirmCode().then((value) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                        builder: (context) => PageAddressData())));
+                          confirmCode().then((value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PageAddressData())));
                         },
                         child: Text("Confirm"),
                       ),
@@ -409,13 +404,12 @@ class _PagePhoneHomState extends State<PagePhoneHom> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: double.infinity,                
+                  height: double.infinity,
                 ),
               ),
             ],
           ),
-        )
-    );
+        ));
   }
 }
 
@@ -648,88 +642,98 @@ class PageMain extends StatelessWidget {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        height: double.infinity,      
+        height: double.infinity,
         child: Row(
           children: <Widget>[
             Expanded(
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,           
-            ),
-          ),
-          Expanded(
-            flex: 6,
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,        
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,                   
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      width: double.infinity,
-                      height: double.infinity,                    
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> PageInsecure()));
-                        },
-                        child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.red,
-                        ),
-                        child: Center(child: Text("Güvende Değilim!", style: TextStyle(fontSize: 30))),
-                      ),
-                      )
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      width: double.infinity,
-                      height: double.infinity,                     
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> PageSecure()));
-                        },
-                        child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.green,
-                        ),
-                        child: Center(child: Text("Güvendeyim", style: TextStyle(fontSize: 30),)),
-                      ),
-                      )
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,                  
-                    ),
-                  )
-                ],
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
               ),
             ),
-          ),
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,         
+            Expanded(
+              flex: 6,
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                          padding: EdgeInsets.all(10),
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PageInsecure()));
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: Colors.red,
+                              ),
+                              child: Center(
+                                  child: Text("Güvende Değilim!",
+                                      style: TextStyle(fontSize: 30))),
+                            ),
+                          )),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                          padding: EdgeInsets.all(10),
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PageSecure()));
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: Colors.green,
+                              ),
+                              child: Center(
+                                  child: Text(
+                                "Güvendeyim",
+                                style: TextStyle(fontSize: 30),
+                              )),
+                            ),
+                          )),
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-          ),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
           ],
         ),
       ),
@@ -782,31 +786,37 @@ class _PageSecureState extends State<PageSecure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(
-          left: 10,
-          right: 10
-        ),
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text("YOUR LOCATION AND HEALTH STATUS HAS BEEN DELIVERED TO YOUR EMERGENCY PEOPLE.", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
-            Container(
-              child: Column(
-                children: <Widget>[
-                  Text("Warning !", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
-                  SizedBox(height: 15,),
-                  Text("After the shake has passed, electricity, gas and water valves should be closed, stoves and heaters should be turned off. By taking other security measures, the necessary goods and materials should be taken and the building should be left from the previously determined road and go to the assembly area."
-                  ,textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
-                ],
-              ),
-            )
-          ],
-        ),
-      )
-    );
+        body: Container(
+      padding: EdgeInsets.only(left: 10, right: 10),
+      width: double.infinity,
+      height: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Text(
+              "YOUR LOCATION AND HEALTH STATUS HAS BEEN DELIVERED TO YOUR EMERGENCY PEOPLE.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline4),
+          Container(
+            child: Column(
+              children: <Widget>[
+                Text("Warning !",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "After the shake has passed, electricity, gas and water valves should be closed, stoves and heaters should be turned off. By taking other security measures, the necessary goods and materials should be taken and the building should be left from the previously determined road and go to the assembly area.",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
   }
 }
 
@@ -823,37 +833,46 @@ class _PageInsecureState extends State<PageInsecure> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(
-          left: 10,
-          right: 10
-        ),
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text("YOUR LOCATION DATA HAS BEEN TRANSMITTED TO OFFICIALS AND EMERGENCY CONTACTS.", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3),
-            Container(
-              child: Column(
-                children: <Widget>[
-                  Text("Warning !", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
-                  SizedBox(height: 15,),
-                  Text("Do not panic. Stay away from unsecured objects such as shelves and windows. If possible, seek shelter by crouching next to a secure object and creating a triangle of life."
-                  ,textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
-                ],
-              ),
+        body: Container(
+      padding: EdgeInsets.only(left: 10, right: 10),
+      width: double.infinity,
+      height: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Text(
+              "YOUR LOCATION DATA HAS BEEN TRANSMITTED TO OFFICIALS AND EMERGENCY CONTACTS.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline3),
+          Container(
+            child: Column(
+              children: <Widget>[
+                Text("Warning !",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "Do not panic. Stay away from unsecured objects such as shelves and windows. If possible, seek shelter by crouching next to a secure object and creating a triangle of life.",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ],
             ),
-            CircleAvatar(
-              backgroundColor: Colors.grey,            
-              maxRadius: 40,
-              minRadius: 25,         
-              child: Text("S.O.S", style: TextStyle(color: Colors.white,)),
-            )
-          ],
-        ),
-      )
-    );
+          ),
+          CircleAvatar(
+            backgroundColor: Colors.grey,
+            maxRadius: 40,
+            minRadius: 25,
+            child: Text("S.O.S",
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+          )
+        ],
+      ),
+    ));
   }
 }
 
@@ -863,248 +882,233 @@ class PageProfile extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(),
         body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      //color: Colors.teal,
-      child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                //color: Colors.brown,
+          width: double.infinity,
+          height: double.infinity,
+          //color: Colors.teal,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                flex: 3,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  //color: Colors.brown,
 
-                child: Stack(
-                  children: <Widget>[                   
-                    Column( /// Column ı kullanmamın sebebi 2 parcaya ayırmak bu şekilde dinamik hale getirmek cunku 
-                    /// sadece Stack in içinde olunca Expanded bir işe yaramadı
-                      children: <Widget>[
-                      Expanded(/// arkaplandaki turuncu
-                        flex: 3,
-                        child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        padding: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          bottom: 15
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
-                        ),
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(30),
-                              bottomLeft: Radius.circular(30)
+                  child: Stack(
+                    children: <Widget>[
+                      Column(
+                        /// Column ı kullanmamın sebebi 2 parcaya ayırmak bu şekilde dinamik hale getirmek cunku
+                        /// sadece Stack in içinde olunca Expanded bir işe yaramadı
+                        children: <Widget>[
+                          Expanded(
+                            /// arkaplandaki turuncu
+                            flex: 3,
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              padding: EdgeInsets.only(
+                                  left: 15, right: 15, bottom: 15),
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(30),
+                                  bottomRight: Radius.circular(30),
+                                ),
+                              ),
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(30),
+                                      bottomLeft: Radius.circular(30)),
+                                ),
+                              ),
                             ),
                           ),
+                          Expanded(
+                              flex: 1,
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  //color: Colors.yellow,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              )),
+                        ],
+                      ),
+                      Align(
+                        /// yuvarlak resim
+                        alignment: Alignment.bottomCenter,
+                        child: CircleAvatar(
+                          radius: 64,
+                          backgroundColor: Colors.orange,
+                          child: CircleAvatar(
+                            radius: 55,
+                            backgroundImage:
+                                AssetImage('assets/images/hbk.jpg'),
+                          ),
                         ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  //color: Colors.grey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "HASAN BATUHAN KURT",
+                        style: TextStyle(fontFamily: "Ralewayto", fontSize: 22),
+                      ),
+                      Text(
+                        "Yazılım Mühendisi",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  padding:
+                      EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.3),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                child: ListTile(
+                                  tileColor: Colors.white,
+                                  trailing: Icon(Icons.keyboard_arrow_right),
+                                  title: Text("Hakan Sasusagi"),
+                                  leading: Icon(Icons.supervised_user_circle),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                child: ListTile(
+                                  tileColor: Colors.white,
+                                  trailing: Icon(Icons.keyboard_arrow_right),
+                                  title: Text("Mert Tiryaki"),
+                                  leading: Icon(Icons.supervised_user_circle),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                child: ListTile(
+                                  tileColor: Colors.white,
+                                  trailing: Icon(Icons.keyboard_arrow_right),
+                                  title: Text("Alper Sipahi"),
+                                  leading: Icon(Icons.supervised_user_circle),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
-                        flex: 1,
-                        child: Align(
-                        alignment: Alignment.bottomCenter,
+                        flex: 2,
                         child: Container(
-                        //color: Colors.yellow,
-                        width: double.infinity,
-                        height: double.infinity,
-                        ),
-                        )
-                      ),
-                      ],
-                    ),
-                    Align( /// yuvarlak resim
-                      alignment: Alignment.bottomCenter,
-                      child: CircleAvatar(
-                      radius: 64,
-                      backgroundColor: Colors.orange,
-                        child: CircleAvatar(
-                        radius: 55,
-                        backgroundImage: AssetImage('assets/images/hbk.jpg'),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                //color: Colors.grey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("HASAN BATUHAN KURT", style: TextStyle(fontFamily: "Ralewayto",fontSize: 22),),
-                    Text("Yazılım Mühendisi", style: TextStyle(fontSize: 16),)
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                margin: EdgeInsets.only(
-                  left: 10,
-                  right: 10
-                ),
-                padding: EdgeInsets.only(
-                  top: 15,
-                  left: 15,
-                  right: 15,
-                  bottom: 15
-                ),
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.3),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30)
-                  )
-                ),
-                child: Column(              
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                      margin: EdgeInsets.only(
-                        bottom: 5
-                      ),
-                      child: ListTile(
-                      tileColor: Colors.white,
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                      title: Text("Hakan Sasusagi"),                 
-                      leading: Icon(Icons.supervised_user_circle),
-                    ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        bottom: 5
-                      ),
-                      child: ListTile(
-                      tileColor: Colors.white,
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                      title: Text("Mert Tiryaki"),                 
-                      leading: Icon(Icons.supervised_user_circle),
-                    ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        bottom: 5
-                      ),
-                      child: ListTile(
-                      tileColor: Colors.white,
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                      title: Text("Alper Sipahi"),                 
-                      leading: Icon(Icons.supervised_user_circle),
-                    ),
-                    )
-                        ],
-                      ),
-                    ),
-                    ),
-                    Expanded(    
-                      flex: 2,                
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          bottom: 10
-                        ),
-                        width: double.infinity,
-                        height: double.infinity,
-                      child: Column( 
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,                   
-                        children: <Widget>[
-                          CircleAvatar(
-                            maxRadius: 35,
-                            minRadius: 25,
-                            backgroundColor: Colors.grey,
-                             child: Icon(Icons.add),
+                          padding: EdgeInsets.only(bottom: 10),
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              CircleAvatar(
+                                maxRadius: 35,
+                                minRadius: 25,
+                                backgroundColor: Colors.grey,
+                                child: Icon(Icons.add),
+                              ),
+                              RaisedButton(
+                                  color: Colors.grey,
+                                  child: Text(
+                                    "report damage",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "Ralewayto"),
+                                  ),
+                                  onPressed: () {}),
+                            ],
                           ),
-                          RaisedButton(
-                            color: Colors.grey,
-                            child: Text("report damage", style: TextStyle(color: Colors.white, fontFamily: "Ralewayto"),),
-                            onPressed: (){}
-                          ),
-                          
-                        ],
-                      ),
-                    ),
-                    )
-                    
-                  ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-      ),
-    )); 
+            ],
+          ),
+        ));
   }
-  expandedDondur(){
+
+  expandedDondur() {
     return Expanded(
-                      flex: 8,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 8,
-                            child: Container(                             
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(17),
-                                image: DecorationImage(
-                                  image: AssetImage("assets/images/kedi.jpg"),
-                                  fit: BoxFit.cover
-                                )
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Container(                             
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(17),
-                                image: DecorationImage(
-                                  image: AssetImage("assets/images/kedi.jpg"),
-                                  fit: BoxFit.cover
-                                )
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Container(                             
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(17),
-                                image: DecorationImage(
-                                  image: AssetImage("assets/images/kedi.jpg"),
-                                  fit: BoxFit.cover
-                                )
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+      flex: 8,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 8,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/kedi.jpg"),
+                      fit: BoxFit.cover)),
+            ),
+          ),
+          Expanded(
+            child: Container(),
+          ),
+          Expanded(
+            flex: 8,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/kedi.jpg"),
+                      fit: BoxFit.cover)),
+            ),
+          ),
+          Expanded(
+            child: Container(),
+          ),
+          Expanded(
+            flex: 8,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/kedi.jpg"),
+                      fit: BoxFit.cover)),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -1187,11 +1191,11 @@ class _PageMapState extends State<PageMap> {
   }
 
   Future<List<MeetingAreaModel>> meetingAreaApiCall() async {
-  http.Response response =
-  await http.get("https://quakekit-api.hbksoftware.com.tr/api/MeetingArea");
-  List responseJson = json.decode(response.body);
-  return responseJson.map((m) => new MeetingAreaModel.fromJson(m)).toList();
-}
+    http.Response response = await http
+        .get("https://quakekit-api.hbksoftware.com.tr/api/MeetingArea");
+    List responseJson = json.decode(response.body);
+    return responseJson.map((m) => new MeetingAreaModel.fromJson(m)).toList();
+  }
 
   void initLoc() async {
     _serviceEnabled = await location.serviceEnabled();
@@ -1215,7 +1219,7 @@ class _PageMapState extends State<PageMap> {
 
   final Completer<GoogleMapController> _controller = Completer();
 
-  double zoomVal=5.0;
+  double zoomVal = 5.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1231,22 +1235,22 @@ class _PageMapState extends State<PageMap> {
   }
 
   Widget _zoomminusfunction() {
-
     return Align(
       alignment: Alignment.topLeft,
       child: IconButton(
-          icon: Icon(FontAwesomeIcons.searchMinus,color:Color(0xff6200ee)),
+          icon: Icon(FontAwesomeIcons.searchMinus, color: Color(0xff6200ee)),
           onPressed: () {
             zoomVal--;
-            _minus( zoomVal);
+            _minus(zoomVal);
           }),
     );
   }
+
   Widget _zoomplusfunction() {
     return Align(
       alignment: Alignment.topRight,
       child: IconButton(
-          icon: Icon(FontAwesomeIcons.searchPlus,color:Color(0xff6200ee)),
+          icon: Icon(FontAwesomeIcons.searchPlus, color: Color(0xff6200ee)),
           onPressed: () {
             zoomVal++;
             _plus(zoomVal);
@@ -1256,11 +1260,14 @@ class _PageMapState extends State<PageMap> {
 
   Future<void> _minus(double zoomVal) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
   }
+
   Future<void> _plus(double zoomVal) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
   }
 
   Widget _buildContainer() {
@@ -1277,21 +1284,27 @@ class _PageMapState extends State<PageMap> {
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  41.081196, 28.925081,"Yayla Sokak Parkı"),
+                  41.081196,
+                  28.925081,
+                  "Yayla Sokak Parkı"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.990063, 28.899872,"Kadriye Gök Parkı"),
+                  40.990063,
+                  28.899872,
+                  "Kadriye Gök Parkı"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.994648, 28.914356,"Stad Parkı"),
+                  40.994648,
+                  28.914356,
+                  "Stad Parkı"),
             ),
           ],
         ),
@@ -1299,12 +1312,12 @@ class _PageMapState extends State<PageMap> {
     );
   }
 
-  Widget _boxes(String _image, double lat,double long,String restaurantName) {
-    return  GestureDetector(
+  Widget _boxes(String _image, double lat, double long, String restaurantName) {
+    return GestureDetector(
       onTap: () {
-        _gotoLocation(lat,long);
+        _gotoLocation(lat, long);
       },
-      child:Container(
+      child: Container(
         child: new FittedBox(
           child: Material(
               color: Colors.white,
@@ -1323,16 +1336,16 @@ class _PageMapState extends State<PageMap> {
                         fit: BoxFit.fill,
                         image: NetworkImage(_image),
                       ),
-                    ),),
+                    ),
+                  ),
                   Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: myDetailsContainer1(restaurantName),
                     ),
                   ),
-
-                ],)
-          ),
+                ],
+              )),
         ),
       ),
     );
@@ -1345,89 +1358,90 @@ class _PageMapState extends State<PageMap> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Container(
-              child: Text(restaurantName,
-                style: TextStyle(
-                    color: Color(0xff6200ee),
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold),
-              )),
+              child: Text(
+            restaurantName,
+            style: TextStyle(
+                color: Color(0xff6200ee),
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold),
+          )),
         ),
-        SizedBox(height:5.0),
+        SizedBox(height: 5.0),
         Container(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                    child: Text(
-                      "",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18.0,
-                      ),
-                    )),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStarHalf,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                    child: Text(
-                      "",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18.0,
-                      ),
-                    )),
-              ],
-            )),
-        SizedBox(height:5.0),
-        Container(
-            child: Text(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Container(
+                child: Text(
               "",
               style: TextStyle(
                 color: Colors.black54,
                 fontSize: 18.0,
               ),
             )),
-        SizedBox(height:5.0),
-        Container(
-            child: Text(
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStarHalf,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+                child: Text(
               "",
               style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
+                color: Colors.black54,
+                fontSize: 18.0,
+              ),
             )),
+          ],
+        )),
+        SizedBox(height: 5.0),
+        Container(
+            child: Text(
+          "",
+          style: TextStyle(
+            color: Colors.black54,
+            fontSize: 18.0,
+          ),
+        )),
+        SizedBox(height: 5.0),
+        Container(
+            child: Text(
+          "",
+          style: TextStyle(
+              color: Colors.black54,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold),
+        )),
       ],
     );
   }
@@ -1448,9 +1462,7 @@ class _PageMapState extends State<PageMap> {
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
-              markers: {
-                marker1, marker2, marker3         
-              },
+              markers: {marker1, marker2, marker3},
             ),
           ),
         ),
@@ -1491,14 +1503,17 @@ class _PageMapState extends State<PageMap> {
           ),
         ));
   }
-  Future<void> _gotoLocation(double lat,double long) async {
+
+  Future<void> _gotoLocation(double lat, double long) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(lat, long), zoom: 15,tilt: 50.0,
-      bearing: 45.0,)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(lat, long),
+      zoom: 15,
+      tilt: 50.0,
+      bearing: 45.0,
+    )));
   }
 }
-
-
 
 Marker marker1 = Marker(
   markerId: MarkerId('marker1'),
@@ -1593,21 +1608,29 @@ class _PageLatestState extends State<PageLatest> {
             if (!snapshot.hasData) return Container();
             List<EarthQuakeModel> earthQuakeModel = snapshot.data;
             return ListView.builder(
-              itemCount: 50,
-              itemBuilder: (context,index){
-                return Container(
-                  margin: EdgeInsets.only(
-                    bottom: 5
-                  ),
-                  color: Colors.grey[400],
-                  child: ListTile(                              
-                  trailing: earthQuakeModel.map((earthQuake) => Text("Büyüklük:  " + earthQuake.eqSize)).toList().elementAt(index),
-                  title: earthQuakeModel.map((earthQuake) => Text(earthQuake.eqLocationName)).toList().elementAt(index),
-                  subtitle: earthQuakeModel.map((earthQuake) => Text(earthQuake.eqTime + "   " + earthQuake.eqDate)).toList().elementAt(index),                           
-                  ),
-                );
-              }
-              );
+                itemCount: 50,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    color: Colors.grey[400],
+                    child: ListTile(
+                      trailing: earthQuakeModel
+                          .map((earthQuake) =>
+                              Text("Büyüklük:  " + earthQuake.eqSize))
+                          .toList()
+                          .elementAt(index),
+                      title: earthQuakeModel
+                          .map((earthQuake) => Text(earthQuake.eqLocationName))
+                          .toList()
+                          .elementAt(index),
+                      subtitle: earthQuakeModel
+                          .map((earthQuake) => Text(
+                              earthQuake.eqTime + "   " + earthQuake.eqDate))
+                          .toList()
+                          .elementAt(index),
+                    ),
+                  );
+                });
           },
         ),
         bottomNavigationBar: BottomAppBar(
